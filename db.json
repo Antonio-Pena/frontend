@@ -1,0 +1,29 @@
+{
+  "analysisModules": [
+    {
+      "id": "m001",
+      "moduleName": "Traffic Interceptor",
+      "moduleVersion": "1.0"
+    },
+    {
+      "id": "m002",
+      "moduleName": "Traffic Interceptor",
+      "moduleVersion": "1.5"
+    },
+    {
+      "id": "m003",
+      "moduleName": "Traffic Interceptor",
+      "moduleVersion": "2.0"
+    },
+    {
+      "id": "m004",
+      "moduleName": "Permissions Analyzer",
+      "moduleVersion": "1.1"
+    },
+    {
+      "id": "m005",
+      "moduleName": "Permissions Analyzer",
+      "moduleVersion": "2.0"
+    }
+  ]
+}
