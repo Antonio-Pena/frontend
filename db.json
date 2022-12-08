@@ -25,5 +25,18 @@
       "moduleName": "Permissions Analyzer",
       "moduleVersion": "2.0"
     }
+  ],
+  "parameters": [
+    {
+      "id": "p001",
+      "parameterName": "Port_Mobile"
+    }
+  ],
+  "moduleParameters": [
+    {
+      "moduleId": "m001",
+      "parameterId": "p001",
+      "parameterValue": "8080"
+    }
   ]
 }
