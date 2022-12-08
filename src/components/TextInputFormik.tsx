@@ -15,7 +15,7 @@ const TextInputFormik = ({ label, ...props }: Props) => {
     <TextField
       label={label}
       fullWidth
-      margin="normal"
+      sx={{ mt: "0.5rem", mb: "0.5rem" }}
       variant="outlined"
       error={meta.touched && Boolean(meta.error)}
       helperText={meta.touched && meta.error}

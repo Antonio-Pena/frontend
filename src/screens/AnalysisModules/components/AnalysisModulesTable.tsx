@@ -9,7 +9,7 @@ import {
 } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Box } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 import { IAnalysisModule } from "../../../types/AnalisisModule";
 
 type AnalysisModuleTableProps = {
@@ -24,24 +24,45 @@ const AnalysisModulesTable = ({
   const [analysisModules, setAnalysisModules] = useState<IAnalysisModule[]>([]);
 
   useEffect(() => {
-    analysisModulesService.getAll().then((analisisModules) => {
+    analysisModulesService.getAllModules().then((analisisModules) => {
       setAnalysisModules(analisisModules);
     });
   }, []);
 
   const columns: GridColumns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "moduleName", headerName: "Module Name", width: 200 },
-    { field: "moduleVersion", headerName: "Module Version", width: 200 },
-    // { field: "", headerName: "Update", width: 200, type: "actions" },
+    {
+      field: "id",
+      headerName: "ID",
+      width: 70,
+      hide: true,
+    },
+    {
+      field: "moduleName",
+      headerName: "Module Name",
+      width: 200,
+      headerAlign: "center",
+      align: "center",
+    },
+    {
+      field: "moduleVersion",
+      headerName: "Module Version",
+      width: 150,
+      headerAlign: "center",
+      align: "center",
+    },
     {
       field: "actions",
       type: "actions",
-      width: 180,
+      headerName: "Operations",
+      width: 100,
       getActions: (params: GridRowParams) => [
         <GridActionsCellItem
           key={params.id}
-          icon={<EditIcon />}
+          icon={
+            <Tooltip title="Edit">
+              <EditIcon />
+            </Tooltip>
+          }
           onClick={() => {
             console.log("edit");
           }}
@@ -49,7 +70,12 @@ const AnalysisModulesTable = ({
         />,
         <GridActionsCellItem
           key={params.id}
-          icon={<DeleteIcon />}
+          icon={
+            <Tooltip title="Delete">
+              <DeleteIcon />
+            </Tooltip>
+          }
+          onFocus={() => {}}
           onClick={() => {
             console.log("delete");
           }}
