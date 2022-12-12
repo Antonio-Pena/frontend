@@ -33,6 +33,10 @@ const updateModule = (id: string, AnalysisModule: IAnalysisModule) => {
 };
 
 //Parameters
+const getAllParameters = () => {
+  const request = axios.get(`${baseUrl}/parameters`);
+  return request.then((res) => res.data);
+};
 const getParameter = (id: string) => {
   const request = axios.get(`${baseUrl}/parameters/${id}`);
   return request.then((res) => res.data);
@@ -75,6 +79,7 @@ const analysisModulesService = {
   createModule,
   eraseModule,
   updateModule,
+  getAllParameters,
   getParameter,
   createParameter,
   getAllModuleParameters,

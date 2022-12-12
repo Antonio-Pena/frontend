@@ -15,7 +15,7 @@ const CreateUpdateAnalysisModuleContainer = ({
     values: IAnalysisModule,
     { resetForm }: FormikHelpers<IAnalysisModule>
   ) => {
-    const { error } = await analysisModulesService.create(values);
+    const { error } = await analysisModulesService.createModule(values);
     if (!error) {
       resetForm();
     }
