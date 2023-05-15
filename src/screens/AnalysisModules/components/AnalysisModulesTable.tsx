@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
-import analysisModulesService from "../../../../services/analysisModules";
+import React from "react";
 import {
   DataGrid,
   GridActionsCellItem,
-  GridColDef,
   GridColumns,
   GridRowParams,
 } from "@mui/x-data-grid";
@@ -11,23 +9,29 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Box, Tooltip } from "@mui/material";
 import { IAnalysisModule } from "../../../types/AnalisisModule";
+import { useRouter } from "next/router";
+import { useFetch } from "../../../hooks/useFetch";
+import Skeleton from "@mui/material/Skeleton";
 
 type AnalysisModuleTableProps = {
   filterByName?: string | undefined;
   filterByVersion?: string | undefined;
+  handleDelete: (isDeleting: boolean, moduleId: string) => void;
 };
 
 const AnalysisModulesTable = ({
   filterByName,
   filterByVersion,
+  handleDelete,
 }: AnalysisModuleTableProps) => {
-  const [analysisModules, setAnalysisModules] = useState<IAnalysisModule[]>([]);
+  const router = useRouter();
 
-  useEffect(() => {
-    analysisModulesService.getAllModules().then((analisisModules) => {
-      setAnalysisModules(analisisModules);
-    });
-  }, []);
+  const { data: analysisModules, loading } = useFetch<IAnalysisModule[]>(
+    `/analysisModules`,
+    []
+  );
+
+  const activeModules = analysisModules.filter((items) => items.isActive);
 
   const columns: GridColumns = [
     {
@@ -64,7 +68,7 @@ const AnalysisModulesTable = ({
             </Tooltip>
           }
           onClick={() => {
-            console.log("edit");
+            router.push(`/analisisModules/${params.id}`);
           }}
           label="Edit"
         />,
@@ -75,9 +79,8 @@ const AnalysisModulesTable = ({
               <DeleteIcon />
             </Tooltip>
           }
-          onFocus={() => {}}
           onClick={() => {
-            console.log("delete");
+            handleDelete(true, `${params.id}`);
           }}
           label="Delete"
         />,
@@ -89,20 +92,20 @@ const AnalysisModulesTable = ({
   if (filterByName && !filterByVersion) {
     const regexp = new RegExp(`${filterByName}`, "i");
     modulesAux.push(
-      ...analysisModules.filter((item) => regexp.test(item.moduleName))
+      ...activeModules.filter((item) => regexp.test(item.moduleName))
     );
   }
   if (!filterByName && filterByVersion) {
     const regexp = new RegExp(`${filterByVersion}`, "i");
     modulesAux.push(
-      ...analysisModules.filter((item) => regexp.test(item.moduleVersion))
+      ...activeModules.filter((item) => regexp.test(item.moduleVersion))
     );
   }
   if (filterByName && filterByVersion) {
     const regexpName = new RegExp(`${filterByName}`, "i");
     const regexpVersion = new RegExp(`${filterByVersion}`, "i");
     modulesAux.push(
-      ...analysisModules.filter(
+      ...activeModules.filter(
         (item) =>
           regexpName.test(item.moduleName) &&
           regexpVersion.test(item.moduleVersion)
@@ -111,24 +114,27 @@ const AnalysisModulesTable = ({
   }
 
   const analysisModulesToShow =
-    filterByName || filterByVersion ? modulesAux : analysisModules;
+    filterByName || filterByVersion ? modulesAux : activeModules;
 
-  return (
-    <Box
-      sx={{
-        height: 400,
-        width: "80%",
-      }}
-    >
-      <DataGrid
-        rows={analysisModulesToShow}
-        columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        // checkboxSelection
-      />
-    </Box>
-  );
+  if (loading) {
+    return <Skeleton variant="rectangular" />;
+  } else {
+    return (
+      <Box
+        sx={{
+          height: 400,
+          width: "80%",
+        }}
+      >
+        <DataGrid
+          rows={analysisModulesToShow}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+        />
+      </Box>
+    );
+  }
 };
 
 export default AnalysisModulesTable;

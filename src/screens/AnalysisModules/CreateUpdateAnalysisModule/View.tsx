@@ -1,8 +1,13 @@
-import { Box, Button, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { uuid } from "uuidv4";
+import { Alert, Box, Button, Typography } from "@mui/material";
 import { Form, Formik, FormikHelpers, FormikProps } from "formik";
-import React from "react";
+import { useRouter } from "next/router";
+import analysisModulesService from "../../../../services/analysisModules";
+import { Parameters } from "../../../components/ParametersImputs";
 import TextInputFormik from "../../../components/TextInputFormik";
-import { IAnalysisModule } from "../../../types/AnalisisModule";
+import { analysisModulesValidationSchema } from "../../../lib/validationSchema";
+import { IAnalysisModule, TParameter } from "../../../types/AnalisisModule";
 
 type CreateUpdateAnalysisModuleProps = {
   isUpdatingAnalysisModule?: boolean;
@@ -11,22 +16,28 @@ type CreateUpdateAnalysisModuleProps = {
     values: IAnalysisModule,
     { setSubmitting, resetForm }: FormikHelpers<IAnalysisModule>
   ) => void;
+  successfullMessage: string;
 };
 
 const defaultAnalysisModule: IAnalysisModule = {
   id: "",
   moduleName: "",
   moduleVersion: "",
+  isActive: false,
+  parameters: [],
 };
 
 const CreateUpdateAnalysisModule = ({
   isUpdatingAnalysisModule,
   analysisModuleSelected,
   handleSubmit,
+  successfullMessage,
 }: CreateUpdateAnalysisModuleProps) => {
+  const router = useRouter();
+
   const titleUpdateCreate = isUpdatingAnalysisModule
-    ? "Create an Analysis Module"
-    : "Update an Analysis Module";
+    ? "Update an Analysis Module"
+    : "Create an Analysis Module";
 
   const renderForm = () => {
     const initialValuesAux: IAnalysisModule = isUpdatingAnalysisModule
@@ -38,33 +49,76 @@ const CreateUpdateAnalysisModule = ({
       : "CREATE MODULE";
 
     return (
-      <Formik
-        initialValues={initialValuesAux}
-        // validationSchema={analysisModulesValidationSchema}
-        enableReinitialize={true}
-        onSubmit={handleSubmit}
-      >
-        {(props: FormikProps<IAnalysisModule>) => (
-          <Form>
-            <TextInputFormik name="moduleName" label="Module Name" />
-            <TextInputFormik name="moduleVersion" label="Module Version" />
+      <>
+        <Formik
+          initialValues={initialValuesAux}
+          validationSchema={analysisModulesValidationSchema}
+          enableReinitialize={true}
+          onSubmit={handleSubmit}
+        >
+          {({
+            values,
+            setValues,
+            setFieldValue,
+          }: FormikProps<IAnalysisModule>) => {
+            return (
+              <Form>
+                <TextInputFormik name="moduleName" label="Module Name" />
+                <TextInputFormik name="moduleVersion" label="Module Version" />
 
-            <Box
-              sx={{ display: "flex", gap: 4, justifyContent: "center", mt: 3 }}
-            >
-              <Button sx={{ mt: 1, mr: 1 }} type="submit" variant="outlined">
-                {labelSubmitButton}
-              </Button>
-            </Box>
-          </Form>
-        )}
-      </Formik>
+                <Parameters
+                  values={values}
+                  setValues={setValues}
+                  setFieldValue={setFieldValue}
+                />
+                {successfullMessage && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      mt: 3,
+                    }}
+                  >
+                    <Alert severity="success">{successfullMessage}</Alert>
+                  </Box>
+                )}
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: 0.5,
+                    justifyContent: "center",
+                    mt: 3,
+                  }}
+                >
+                  <Button
+                    color="warning"
+                    sx={{ mt: 1, mr: 1 }}
+                    variant="contained"
+                    onClick={() => {
+                      router.push("/");
+                    }}
+                  >
+                    CANCEL
+                  </Button>
+                  <Button
+                    sx={{ mt: 1, mr: 1 }}
+                    type="submit"
+                    variant="contained"
+                  >
+                    {labelSubmitButton}
+                  </Button>
+                </Box>
+              </Form>
+            );
+          }}
+        </Formik>
+      </>
     );
   };
   return (
     <Box
       sx={{
-        padding: "3rem",
+        padding: "3rem 3rem 2rem 3rem",
       }}
     >
       <Box sx={{ display: "flex", justifyContent: "center" }}>
@@ -78,8 +132,7 @@ const CreateUpdateAnalysisModule = ({
           gap: "1rem",
           justifyContent: "center",
           alignItems: "center",
-          padding: "3rem",
-          mb: 2,
+          padding: "3rem 3rem 3rem 3rem",
           mt: { xs: 2, md: 0 },
         }}
       >
