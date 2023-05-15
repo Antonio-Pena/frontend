@@ -20,16 +20,26 @@ const getModule = (id: string) => {
 
 const createModule = (newAnalysisModule: IAnalysisModule) => {
   const request = axios.post(`${baseUrl}/analysisModules`, newAnalysisModule);
-  return request.then((res) => res.data);
+  return request.then((res) => {
+    console.log("creado");
+    return res.data;
+  });
 };
 
-const eraseModule = (id: string) => {
-  return axios.delete(`${baseUrl}/analisisModules/${id}`);
-};
+const updateModule = async (
+  id: string,
+  updatedAnalysisModule: IAnalysisModule
+) => {
+  const request = axios.put(
+    `${baseUrl}/analysisModules/${id}`,
+    updatedAnalysisModule
+  );
 
-const updateModule = (id: string, AnalysisModule: IAnalysisModule) => {
-  const request = axios.put(`${baseUrl}/analisisModules/${id}`, AnalysisModule);
-  return request.then((res) => res.data);
+  return request
+    .then((res) => res.data)
+    .catch((err) => {
+      console.log("Err: ", err);
+    });
 };
 
 //Parameters
@@ -44,7 +54,9 @@ const getParameter = (id: string) => {
 
 const createParameter = (newParameter: TParameter) => {
   const request = axios.post(`${baseUrl}/parameters`, newParameter);
-  return request.then((res) => res.data);
+  return request
+    .then((res) => res.data)
+    .catch((err) => console.log("ErrorParam", err));
 };
 
 //moduleParameters
@@ -58,16 +70,16 @@ const createModuleParameter = (newModuleParameter: TModuleParameter) => {
   return request.then((res) => res.data);
 };
 
-const eraseModuleParameter = (moduleId: string) => {
-  return axios.delete(`${baseUrl}/analisisModules?moduleId=${moduleId}`);
+const eraseModuleParameter = (id: string) => {
+  return axios.delete(`${baseUrl}/moduleParameters/${id}`);
 };
 
 const updateModuleParameter = (
-  moduleId: string,
+  id: string,
   moduleParameter: TModuleParameter
 ) => {
   const request = axios.put(
-    `${baseUrl}/analisisModules?moduleId=${moduleId}`,
+    `${baseUrl}/analisisModules/${id}`,
     moduleParameter
   );
   return request.then((res) => res.data);
@@ -77,7 +89,6 @@ const analysisModulesService = {
   getAllModules,
   getModule,
   createModule,
-  eraseModule,
   updateModule,
   getAllParameters,
   getParameter,
