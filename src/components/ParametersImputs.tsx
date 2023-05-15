@@ -16,7 +16,7 @@ export const Parameters = ({ values, setValues, setFieldValue }: Props) => {
     `/parameters`,
     []
   );
-  const parameters = [...values.parameters];
+  const parameters = [...values.parameters!];
   const handleAddNewParameter = () => {
     const emptyParameter: TParameter = { id: "", parameterName: "" };
     parameters.push(emptyParameter);

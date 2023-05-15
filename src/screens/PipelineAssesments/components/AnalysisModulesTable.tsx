@@ -65,9 +65,12 @@ const AnalysisModulesTable = ({
             </Tooltip>
           }
           onClick={() => {
-            router.push(`/analisisModules/${params.id}`);
+            router.push({
+              pathname: "/settingAnalysisModules/Module",
+              query: { moduleId: params.id },
+            });
           }}
-          label="Edit"
+          label="Set"
         />,
       ],
     },
