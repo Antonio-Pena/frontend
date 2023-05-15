@@ -3,7 +3,7 @@ export interface IAnalysisModule {
   moduleName: string;
   moduleVersion: string;
   isActive: boolean;
-  parameters: TParameter[];
+  parameters?: TParameter[];
 }
 
 export type TParameter = {
@@ -17,3 +17,15 @@ export type TModuleParameter = {
   parameterId: string;
   parameterValue: string;
 };
+
+export type TSetUpParameter = {
+  parameterName: string;
+  parameterValue: string;
+};
+export interface ISetUpAnalysisModule {
+  id: string;
+  moduleName: string;
+  moduleVersion: string;
+  isActive: boolean;
+  parameters?: TSetUpParameter[];
+}
