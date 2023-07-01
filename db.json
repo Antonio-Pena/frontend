@@ -81,7 +81,7 @@
       "id": "872fa071-9946-4ca7-92b6-e5cc0d293b7f",
       "moduleName": "Traffic Analizer",
       "moduleVersion": "1.0",
-      "isActive": true,
+      "isActive": false,
       "parameters": [
         {
           "parameterName": "memory",
@@ -90,6 +90,70 @@
         {
           "parameterName": "ip_address",
           "parameterValue": "192.168.100.12"
+        },
+        {
+          "parameterName": "param1",
+          "parameterValue": "test"
+        }
+      ]
+    },
+    {
+      "id": "1a30ad2d-b25b-413d-ba48-55fe881011af",
+      "moduleName": "Traffic Analizer",
+      "moduleVersion": "1.0",
+      "isActive": true,
+      "parameters": [
+        {
+          "parameterName": "memory",
+          "parameterValue": "2048"
+        },
+        {
+          "parameterName": "ip_address",
+          "parameterValue": "192.168.100.12"
+        },
+        {
+          "parameterName": "param1",
+          "parameterValue": "test2"
+        }
+      ]
+    },
+    {
+      "id": "0ce4d642-7a85-487b-a180-53467c809120",
+      "moduleName": "Traffic Interceptor",
+      "moduleVersion": "1.5",
+      "isActive": true,
+      "parameters": [
+        {
+          "parameterName": "param1",
+          "parameterValue": "value1"
+        },
+        {
+          "parameterName": "param2",
+          "parameterValue": "value2"
+        },
+        {
+          "parameterName": "param3",
+          "parameterValue": "ppp2"
+        },
+        {
+          "parameterName": "param5",
+          "parameterValue": "value4"
+        }
+      ]
+    },
+    {
+      "id": "4d8323db-b498-44d6-baa5-4539d56471eb",
+      "moduleName": "Traffic Analizer",
+      "moduleVersion": "1.0",
+      "isActive": true,
+      "parameters": [
+        {
+          "parameterName": "memory",
+          "parameterValue": "2048"
+        },
+        {
+          "parameterName": "ip_address",
+          "parameterValue": "192.168.100.25"
         },
         {
           "parameterName": "param1",

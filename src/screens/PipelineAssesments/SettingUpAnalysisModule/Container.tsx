@@ -23,6 +23,13 @@ const defaultAnalysisModule: IAnalysisModule = {
   parameters: [],
   isActive: false,
 };
+const defaultSetAnalysisModule: ISetUpAnalysisModule = {
+  id: "",
+  moduleName: "",
+  moduleVersion: "",
+  parameters: [],
+  isActive: false,
+};
 
 const SetEditAnalysisModuleContainer = ({
   isEditingAnalysisModule,
@@ -35,14 +42,25 @@ const SetEditAnalysisModuleContainer = ({
     `/analysisModules/${analysisModuleId}`,
     defaultAnalysisModule
   );
-
-  const { data: allParameters } = useFetch<TParameter[]>(`/parameters`, []);
+  const { data: setAnalisisModuleSelected } = useFetch<ISetUpAnalysisModule>(
+    `/setUpAnalysisModules/${analysisModuleId}`,
+    defaultSetAnalysisModule
+  );
+  console.log("setAnalisisModuleSelected", setAnalisisModuleSelected);
 
   const handleSubmit = async (
     values: ISetUpAnalysisModule,
     { resetForm }: FormikHelpers<ISetUpAnalysisModule>
   ) => {
     if (isEditingAnalysisModule) {
+      const editedAnalisisModule: ISetUpAnalysisModule = { ...values };
+      const { error } = await analysisModulesService.updateSetUpModule(
+        analysisModuleId,
+        editedAnalisisModule
+      );
+      if (!error) {
+        resetForm();
+      }
     } else {
       const setUpAnalisysModule: ISetUpAnalysisModule = {
         ...values,
@@ -59,12 +77,12 @@ const SetEditAnalysisModuleContainer = ({
     }
     setSuccessfullMessage(
       `Analysis module ${values.moduleName} has been ${
-        isEditingAnalysisModule ? "updated" : "set"
+        isEditingAnalysisModule ? "updated" : "set up"
       } successfully`
     );
     setTimeout(() => {
       setSuccessfullMessage("");
-      router.push(`/settingAnalysisModules`);
+      router.push(`/settingUpPipelineAssesment`);
     }, 1000);
   };
 
@@ -72,6 +90,7 @@ const SetEditAnalysisModuleContainer = ({
     <>
       <SetEditAnalysisModuleView
         analysisModuleSelected={analysisModuleSelected}
+        setAnalisisModuleSelected={setAnalisisModuleSelected}
         isEditingAnalysisModule={isEditingAnalysisModule}
         handleSubmit={handleSubmit}
         successfullMessage={successfullMessage}

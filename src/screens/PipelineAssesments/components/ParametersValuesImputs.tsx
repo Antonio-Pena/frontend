@@ -14,6 +14,7 @@ type Props = {
 };
 
 export const Parameters = ({ values, setValues, setFieldValue }: Props) => {
+  console.log("values", values);
   const parameters = [...values?.parameters!];
 
   const handleChangeParameter = (
@@ -29,6 +30,7 @@ export const Parameters = ({ values, setValues, setFieldValue }: Props) => {
     parameters[Number(event.target.id)] = newParameter;
     setFieldValue("parameters", parameters);
   };
+  console.log("parameters", parameters);
 
   return (
     <>

@@ -31,6 +31,7 @@ const SetEditAnalysisModule = ({
   successfullMessage,
 }: SetEditAnalysisModuleProps) => {
   const router = useRouter();
+  console.log("isEditingAnalysisModule", isEditingAnalysisModule);
 
   const analysisModuleInitialValues: ISetUpAnalysisModule = {
     id: "",
@@ -112,7 +113,7 @@ const SetEditAnalysisModule = ({
                     sx={{ mt: 1, mr: 1 }}
                     variant="contained"
                     onClick={() => {
-                      router.push("/settingAnalysisModules");
+                      router.push("/settingUpPipelineAssesment");
                     }}
                   >
                     CANCEL

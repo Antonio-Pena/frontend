@@ -87,10 +87,6 @@ const updateModuleParameter = (
 };
 
 //SetUpModules
-// const getAllSetUpModules = () => {
-//   const request = axios.get(`${baseUrl}/analysisModules`);
-//   return request.then((res) => res.data);
-// };
 
 // const getSetUpModule = (id: string) => {
 //   const request = axios.get(`${baseUrl}/analysisModules/${id}`);
@@ -108,21 +104,21 @@ const createSetUpModule = (newSetUpAnalysisModule: ISetUpAnalysisModule) => {
   });
 };
 
-// const updateSetUpModule = async (
-//   id: string,
-//   updatedAnalysisModule: IAnalysisModule
-// ) => {
-//   const request = axios.put(
-//     `${baseUrl}/analysisModules/${id}`,
-//     updatedAnalysisModule
-//   );
+const updateSetUpModule = async (
+  id: string,
+  updatedSetAnalysisModule: ISetUpAnalysisModule
+) => {
+  const request = axios.put(
+    `${baseUrl}/setUpAnalysisModules/${id}`,
+    updatedSetAnalysisModule
+  );
 
-//   return request
-//     .then((res) => res.data)
-//     .catch((err) => {
-//       console.log("Err: ", err);
-//     });
-// };
+  return request
+    .then((res) => res.data)
+    .catch((err) => {
+      console.log("Err: ", err);
+    });
+};
 
 const analysisModulesService = {
   getAllModules,
@@ -137,6 +133,7 @@ const analysisModulesService = {
   eraseModuleParameter,
   updateModuleParameter,
   createSetUpModule,
+  updateSetUpModule,
 };
 
 export default analysisModulesService;

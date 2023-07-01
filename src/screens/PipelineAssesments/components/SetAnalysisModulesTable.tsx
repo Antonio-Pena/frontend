@@ -19,19 +19,19 @@ type AnalysisModuleTableProps = {
   handleDelete: (isDeleting: boolean, moduleId: string) => void;
 };
 
-const AnalysisModulesTable = ({
+const SetAnalysisModulesTable = ({
   filterByName,
   filterByVersion,
   handleDelete,
 }: AnalysisModuleTableProps) => {
   const router = useRouter();
 
-  const { data: analysisModules, loading } = useFetch<IAnalysisModule[]>(
-    `/analysisModules`,
+  const { data: setUpAnalysisModules, loading } = useFetch<IAnalysisModule[]>(
+    `/setUpAnalysisModules`,
     []
   );
 
-  const activeModules = analysisModules.filter((items) => items.isActive);
+  const activeModules = setUpAnalysisModules.filter((items) => items.isActive);
 
   const columns: GridColumns = [
     {
@@ -68,7 +68,10 @@ const AnalysisModulesTable = ({
             </Tooltip>
           }
           onClick={() => {
-            router.push(`/analisisModules/${params.id}`);
+            router.push({
+              pathname: "/settingAnalysisModules/Module",
+              query: { isEditing: true, moduleId: params.id },
+            });
           }}
           label="Edit"
         />,
@@ -122,7 +125,7 @@ const AnalysisModulesTable = ({
     return (
       <Box
         sx={{
-          height: 400,
+          height: 350,
           width: "80%",
         }}
       >
@@ -137,4 +140,4 @@ const AnalysisModulesTable = ({
   }
 };
 
-export default AnalysisModulesTable;
+export default SetAnalysisModulesTable;

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
-import Filter from "../../components/Filter";
-import AnalysisModulesTable from "./components/AnalysisModulesTable";
 import { useRouter } from "next/router";
-import CustomModal from "../../components/Modal";
 import WarningIcon from "@mui/icons-material/Warning";
-import analysisModulesService from "../../../services/analysisModules";
-import { useFetch } from "../../hooks/useFetch";
-import { IAnalysisModule } from "../../types/AnalisisModule";
+import { ISetUpAnalysisModule } from "../../../types/AnalisisModule";
+import { useFetch } from "../../../hooks/useFetch";
+import analysisModulesService from "../../../../services/analysisModules";
+import Filter from "../../../components/Filter";
+import SetAnalysisModulesTable from "../components/SetAnalysisModulesTable";
+import CustomModal from "../../../components/Modal";
 
 const View = () => {
   const [filterByName, setFilterByName] = useState<string>("");
@@ -17,8 +17,8 @@ const View = () => {
 
   const router = useRouter();
 
-  const { data: allModules } = useFetch<IAnalysisModule[]>(
-    `/analysisModules`,
+  const { data: allSetUpModules } = useFetch<ISetUpAnalysisModule[]>(
+    `/setUpAnalysisModules`,
     []
   );
 
@@ -29,8 +29,8 @@ const View = () => {
     setFilterByVersion(search);
   };
 
-  const handleCreateModule = () => {
-    router.push(`/analisisModules/newModule`);
+  const handleAddNewModule = () => {
+    router.push(`/settingAnalysisModules`);
   };
 
   const handleDeleteModule = (isDeleting: boolean, moduleId: string) => {
@@ -40,11 +40,12 @@ const View = () => {
 
   const onConfirmDeleting = () => {
     const idAux = moduleIdToDelete;
-    const moduleToDelete = allModules.find((m) => m.id === idAux);
+    const moduleToDelete = allSetUpModules.find((m) => m.id === idAux);
     const moduleAux = { ...moduleToDelete!, isActive: false };
 
-    analysisModulesService.updateModule(idAux, moduleAux);
+    analysisModulesService.updateSetUpModule(idAux, moduleAux);
     setIsDeleting(false);
+    window.location.reload();
   };
 
   return (
@@ -56,7 +57,7 @@ const View = () => {
       >
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Typography variant="h3" component="h1">
-            Analysis Modules
+            Setting Up an Assesment Pipeline
           </Typography>
         </Box>
         <Box
@@ -93,24 +94,44 @@ const View = () => {
               <Button
                 sx={{ mt: 1, mr: 1 }}
                 variant="contained"
-                onClick={handleCreateModule}
+                onClick={handleAddNewModule}
               >
-                CREATE MODULE
+                ADD NEW
               </Button>
             </Box>
           </Box>
 
-          <AnalysisModulesTable
+          <SetAnalysisModulesTable
             filterByName={filterByName}
             filterByVersion={filterByVersion}
             handleDelete={handleDeleteModule}
           />
+          <Box
+            sx={{
+              display: "flex",
+              gap: 0.5,
+              justifyContent: "center",
+              mt: 3,
+            }}
+          >
+            <Button
+              color="warning"
+              sx={{ mt: 1, mr: 1 }}
+              variant="contained"
+              onClick={() => {}}
+            >
+              STOP
+            </Button>
+            <Button sx={{ mt: 1, mr: 1 }} variant="contained">
+              EXECUTE
+            </Button>
+          </Box>
         </Box>
       </Box>
       {isDeleting && (
         <CustomModal
           icon={<WarningIcon />}
-          title="Delete analysis module"
+          title="Delete set up analysis module"
           onClose={() => {
             setIsDeleting(false);
           }}
