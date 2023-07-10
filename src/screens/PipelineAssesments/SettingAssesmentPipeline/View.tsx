@@ -1,25 +1,32 @@
 import React, { useState } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import WarningIcon from "@mui/icons-material/Warning";
 import { ISetUpAnalysisModule } from "../../../types/AnalisisModule";
 import { useFetch } from "../../../hooks/useFetch";
-import analysisModulesService from "../../../../services/analysisModules";
 import Filter from "../../../components/Filter";
-import SetAnalysisModulesTable from "../components/SetAnalysisModulesTable";
+import SetUpAnalysisModulesTable from "../components/SetUpAnalysisModulesTable";
 import CustomModal from "../../../components/Modal";
+import { useMutation } from "@apollo/client";
+import { DELETE_SET_UP_ANALYSIS_MODULE } from "../../../services/setUpAnalysisModule/mutateSetUpAnalysisModule";
 
 const View = () => {
   const [filterByName, setFilterByName] = useState<string>("");
   const [filterByVersion, setFilterByVersion] = useState<string>("");
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [moduleIdToDelete, setModuleIdToDelete] = useState<string>("");
+  const [successfullDeleteMessage, setSuccessfullDeleteMessage] =
+    useState<string>("");
 
   const router = useRouter();
 
   const { data: allSetUpModules } = useFetch<ISetUpAnalysisModule[]>(
     `/setUpAnalysisModules`,
     []
+  );
+
+  const [SetUpAnalysisModuleDelete, { error: errorDeleting }] = useMutation(
+    DELETE_SET_UP_ANALYSIS_MODULE
   );
 
   const searchModuleByName = (search: string) => {
@@ -41,11 +48,18 @@ const View = () => {
   const onConfirmDeleting = () => {
     const idAux = moduleIdToDelete;
     const moduleToDelete = allSetUpModules.find((m) => m.id === idAux);
-    const moduleAux = { ...moduleToDelete!, isActive: false };
 
-    analysisModulesService.updateSetUpModule(idAux, moduleAux);
+    SetUpAnalysisModuleDelete({
+      variables: { setUpAnalysisModuleDeleteId: idAux },
+    });
     setIsDeleting(false);
-    window.location.reload();
+    setSuccessfullDeleteMessage(
+      `El módulo ${moduleToDelete?.name} ha sido borrado`
+    );
+    setTimeout(() => {
+      setSuccessfullDeleteMessage("");
+      window.location.reload();
+    }, 1500);
   };
 
   return (
@@ -101,7 +115,7 @@ const View = () => {
             </Box>
           </Box>
 
-          <SetAnalysisModulesTable
+          <SetUpAnalysisModulesTable
             filterByName={filterByName}
             filterByVersion={filterByVersion}
             handleDelete={handleDeleteModule}

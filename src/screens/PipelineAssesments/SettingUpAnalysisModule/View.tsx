@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { uuid } from "uuidv4";
 import { Alert, Box, Button, TextField, Typography } from "@mui/material";
 import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import { useRouter } from "next/router";
-import analysisModulesService from "../../../../services/analysisModules";
 import TextInputFormik from "../../../components/TextInputFormik";
 import { analysisModulesValidationSchema } from "../../../lib/validationSchema";
 import {
@@ -31,26 +29,27 @@ const SetEditAnalysisModule = ({
   successfullMessage,
 }: SetEditAnalysisModuleProps) => {
   const router = useRouter();
-  console.log("isEditingAnalysisModule", isEditingAnalysisModule);
 
   const analysisModuleInitialValues: ISetUpAnalysisModule = {
     id: "",
-    moduleName: analysisModuleSelected?.moduleName!,
-    moduleVersion: analysisModuleSelected?.moduleVersion!,
+    name: analysisModuleSelected?.name!,
+    version: analysisModuleSelected?.version!,
     isActive: false,
     parameters: analysisModuleSelected?.parameters?.map((p) => {
-      return { parameterName: p.parameterName, parameterValue: "" };
+      return { name: p.name, value: "" };
     }),
   };
 
   const titleSetEdit = isEditingAnalysisModule
-    ? "Editing an Analysis Module"
+    ? "Editing an Set Up Analysis Module"
     : "Setting Up an Analysis Module";
 
   const renderForm = () => {
     const initialValuesAux: ISetUpAnalysisModule = isEditingAnalysisModule
       ? setAnalisisModuleSelected!
       : analysisModuleInitialValues!;
+
+    console.log("initialValuesAux", initialValuesAux);
 
     const labelSubmitButton = isEditingAnalysisModule
       ? "UPDATE MODULE"
@@ -69,18 +68,14 @@ const SetEditAnalysisModule = ({
             setValues,
             setFieldValue,
           }: FormikProps<ISetUpAnalysisModule>) => {
-            const moduleName = values.moduleName;
+            const moduleName = values?.name;
 
             return (
               <Form>
+                <TextInputFormik disabled name="name" label="Module Name" />
                 <TextInputFormik
                   disabled
-                  name="moduleName"
-                  label="Module Name"
-                />
-                <TextInputFormik
-                  disabled
-                  name="moduleVersion"
+                  name="version"
                   label="Module Version"
                 />
 

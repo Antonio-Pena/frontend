@@ -2,24 +2,28 @@ import { FormikHelpers } from "formik";
 import React, { useState } from "react";
 import {
   IAnalysisModule,
+  IUpdateCreateAnalysisModule,
   TModuleParameter,
   TParameter,
 } from "../../../types/AnalisisModule";
 import CreateUpdateAnalysisModuleView from "./View";
-import analysisModulesService from "../../../../services/analysisModules";
 import { useRouter } from "next/router";
 import { Alert, Box } from "@mui/material";
 import { uuid } from "uuidv4";
-import { useFetch } from "../../../hooks/useFetch";
-import { createNewParameters } from "../lib/createNewParameters";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_ANALYSIS_MODULE } from "../../../services/analysisModules/getAnalysisModules";
+import {
+  CREATE_ANALYSIS_MODULE,
+  UPDATE_ANALYSIS_MODULE,
+} from "../../../services/analysisModules/mutateAnalysisModule";
 
 type Props = {
   isUpdatingAnalysisModule: boolean;
 };
 const defaultAnalysisModule: IAnalysisModule = {
   id: "",
-  moduleName: "",
-  moduleVersion: "",
+  name: "",
+  version: "",
   parameters: [],
   isActive: false,
 };
@@ -31,75 +35,67 @@ const CreateUpdateAnalysisModuleContainer = ({
   const { id } = router.query;
   const [successfullMessage, setSuccessfullMessage] = useState<string>("");
 
-  const { data: analysisModuleSelected } = useFetch<IAnalysisModule>(
-    `/analysisModules/${id}`,
-    defaultAnalysisModule
-  );
+  const {
+    data: analysisModuleData,
+    error,
+    loading: loadingData,
+  } = useQuery(GET_ANALYSIS_MODULE, {
+    variables: { analysisModuleId: id },
+  });
+  const {
+    analysisModule: analysisModuleSelected,
+  }: { analysisModule: IAnalysisModule } = analysisModuleData || {};
 
-  const { data: allParameters } = useFetch<TParameter[]>(`/parameters`, []);
+  const [
+    AnalysisModuleUpdate,
+    { data: dataUpdated, loading, error: errorUpdating },
+  ] = useMutation(UPDATE_ANALYSIS_MODULE);
+
+  const [
+    AnalysisModuleCreate,
+    { data: dataCreated, loading: loadingCreation, error: errorCreating },
+  ] = useMutation(CREATE_ANALYSIS_MODULE);
 
   const handleSubmit = async (
     values: IAnalysisModule,
     { resetForm }: FormikHelpers<IAnalysisModule>
   ) => {
-    const parametersToUpdateCreate = values.parameters.filter(
-      (p) => p.parameterName !== ""
-    );
+    const { id, name, version, parameters } = values;
+
+    const parametersToUpdateCreate = parameters!
+      .filter((p) => p.name !== "")
+      .map((item) => item.name);
     if (isUpdatingAnalysisModule) {
-      const analisysModuleToUpdate: IAnalysisModule = {
-        ...values,
+      const analisysModuleToUpdate: IUpdateCreateAnalysisModule = {
+        id,
+        name,
+        version,
         parameters: parametersToUpdateCreate,
       };
-      const { error } = await analysisModulesService.updateModule(
-        analisysModuleToUpdate.id,
-        analisysModuleToUpdate
-      );
-      if (!error) {
-        resetForm();
-      }
 
-      // moduleParametersToCreate.forEach(async (param) => {
-      //   const parameterData = allParameters.find(
-      //     (item) => item.parameterName === param
-      //   ) || { id: "", parameterName: "" };
-      //   const newModuleParameter: TModuleParameter = {
-      //     id: uuid(),
-      //     moduleId: analisysModuleToUpdate.id,
-      //     parameterId: parameterData.id,
-      //     parameterValue: "",
-      //   };
-      //   await analysisModulesService.createModuleParameter(newModuleParameter);
-      // });
+      AnalysisModuleUpdate({ variables: { input: analisysModuleToUpdate } });
+
+      // if (!errorUpdating) {
+      //   resetForm();
+      // }
     } else {
-      const analisysModule: IAnalysisModule = {
-        ...values,
+      const analisysModuleToCreate: IUpdateCreateAnalysisModule = {
         id: uuid(),
+        name,
+        version,
         parameters: parametersToUpdateCreate,
-        isActive: true,
       };
 
-      const { error } = await analysisModulesService.createModule(
-        analisysModule
-      );
-      if (!error) {
-        resetForm();
-      }
-      // moduleParametersToCreate.forEach(async (param) => {
-      //   const parameterData = allParameters.find(
-      //     (item) => item.parameterName === param
-      //   ) || { id: "", parameterName: "" };
-      //   const newModuleParameter: TModuleParameter = {
-      //     id: uuid(),
-      //     moduleId: analisysModule.id,
-      //     parameterId: parameterData.id,
-      //     parameterValue: "",
-      //   };
-      //   await analysisModulesService.createModuleParameter(newModuleParameter);
-      // });
+      AnalysisModuleCreate({
+        variables: { input: analisysModuleToCreate },
+      });
+
+      // if (!error) {
+      //   resetForm();
+      // }
     }
-    createNewParameters(parametersToUpdateCreate, allParameters);
     setSuccessfullMessage(
-      `Analysis module ${values.moduleName} has been ${
+      `Analysis module ${values.name} has been ${
         isUpdatingAnalysisModule ? "updated" : "created"
       } successfully`
     );

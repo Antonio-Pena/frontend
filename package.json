@@ -10,6 +10,7 @@
     "server": "json-server -p3001 --watch db.json"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.16",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@fontsource/roboto": "^4.5.8",
@@ -23,6 +24,7 @@
     "eslint": "8.27.0",
     "eslint-config-next": "13.0.3",
     "formik": "^2.2.9",
+    "graphql": "^16.7.1",
     "json-server": "^0.17.1",
     "lodash": "^4.17.21",
     "next": "13.0.3",

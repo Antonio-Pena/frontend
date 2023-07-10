@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, TextField, Typography } from "@mui/material";
 import Filter from "../../components/Filter";
 import AnalysisModulesTable from "./components/AnalysisModulesTable";
 import { useRouter } from "next/router";
@@ -8,18 +8,26 @@ import WarningIcon from "@mui/icons-material/Warning";
 import analysisModulesService from "../../../services/analysisModules";
 import { useFetch } from "../../hooks/useFetch";
 import { IAnalysisModule } from "../../types/AnalisisModule";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_ANALYSIS_MODULES } from "../../services/analysisModules/getAnalysisModules";
+import { DELETE_ANALYSIS_MODULE } from "../../services/analysisModules/mutateAnalysisModule";
 
 const View = () => {
   const [filterByName, setFilterByName] = useState<string>("");
   const [filterByVersion, setFilterByVersion] = useState<string>("");
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [moduleIdToDelete, setModuleIdToDelete] = useState<string>("");
+  const [successfullDeleteMessage, setSuccessfullDeleteMessage] =
+    useState<string>("");
 
   const router = useRouter();
 
-  const { data: allModules } = useFetch<IAnalysisModule[]>(
-    `/analysisModules`,
-    []
+  const { data, error, loading } = useQuery(GET_ANALYSIS_MODULES);
+  const { analysisModules }: { analysisModules: IAnalysisModule[] } =
+    data || {};
+
+  const [AnalysisModuleDelete, { error: errorDeleting }] = useMutation(
+    DELETE_ANALYSIS_MODULE
   );
 
   const searchModuleByName = (search: string) => {
@@ -30,7 +38,7 @@ const View = () => {
   };
 
   const handleCreateModule = () => {
-    router.push(`/analisisModules/newModule`);
+    router.push(`/analysisModules/newModule`);
   };
 
   const handleDeleteModule = (isDeleting: boolean, moduleId: string) => {
@@ -40,25 +48,48 @@ const View = () => {
 
   const onConfirmDeleting = () => {
     const idAux = moduleIdToDelete;
-    const moduleToDelete = allModules.find((m) => m.id === idAux);
-    const moduleAux = { ...moduleToDelete!, isActive: false };
-
-    analysisModulesService.updateModule(idAux, moduleAux);
+    const moduleToDelete = analysisModules?.find(
+      (m: IAnalysisModule) => m.id === idAux
+    );
+    AnalysisModuleDelete({ variables: { analysisModuleDeleteId: idAux } });
     setIsDeleting(false);
+    setSuccessfullDeleteMessage(
+      `El módulo ${moduleToDelete?.name} ha sido borrado`
+    );
+    setTimeout(() => {
+      setSuccessfullDeleteMessage("");
+      router.push(`/`);
+    }, 1500);
   };
 
   return (
     <>
       <Box
         sx={{
-          padding: "3rem",
+          padding: "2rem",
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            pb: successfullDeleteMessage ? 0 : 3,
+          }}
+        >
           <Typography variant="h3" component="h1">
             Analysis Modules
           </Typography>
         </Box>
+        {successfullDeleteMessage && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Alert severity="success">{successfullDeleteMessage}</Alert>
+          </Box>
+        )}
         <Box
           sx={{
             display: "flex",
@@ -71,7 +102,7 @@ const View = () => {
               width: "80%",
               display: "flex",
               gap: "1rem",
-              paddingTop: "2rem",
+              paddingTop: successfullDeleteMessage ? "5px" : "2rem",
               justifyContent: { xs: "space-between" },
               mb: 2,
               mt: { xs: 2, md: 0 },

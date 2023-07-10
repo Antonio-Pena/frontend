@@ -4,21 +4,27 @@ import AddIcon from "@mui/icons-material/Add";
 import { IAnalysisModule, TParameter } from "../types/AnalisisModule";
 import { useFetch } from "../hooks/useFetch";
 import { uuid } from "uuidv4";
+import { useQuery } from "@apollo/client";
+import { GET_PARAMETERS } from "../services/parameters/getParameters";
 
 type Props = {
   values: IAnalysisModule;
-  setValues: (values: IAnalysisModule) => void;
   setFieldValue: (field: string, value: any) => void;
 };
 
-export const Parameters = ({ values, setValues, setFieldValue }: Props) => {
-  const { data: allParameters, loading } = useFetch<TParameter[]>(
-    `/parameters`,
-    []
-  );
-  const parameters = [...values.parameters!];
+export const Parameters = ({ values, setFieldValue }: Props) => {
+  // const { data: allParameters } = useFetch<TParameter[]>(`/parameters`, []);
+
+  const { data, error, loading } = useQuery(GET_PARAMETERS);
+
+  const { parameters: allParameters }: { parameters: TParameter[] } =
+    data || {};
+
+  const { parameters: parametersInValues } = values || { parameters: [] };
+
+  const parameters = [...parametersInValues!];
   const handleAddNewParameter = () => {
-    const emptyParameter: TParameter = { id: "", parameterName: "" };
+    const emptyParameter: TParameter = { id: "", name: "" };
     parameters.push(emptyParameter);
     setFieldValue("parameters", parameters);
   };
@@ -28,19 +34,26 @@ export const Parameters = ({ values, setValues, setFieldValue }: Props) => {
   ) => {
     event.preventDefault();
     const newParameterName = event.target.value;
-    const parameterExists = allParameters.find(
-      (p) => p.parameterName === newParameterName
-    );
-    if (parameterExists) {
-      parameters[Number(event.target.id)] = parameterExists;
-    } else {
-      const newParameter: TParameter = {
-        id: uuid(),
-        parameterName: newParameterName,
-      };
-      parameters[Number(event.target.id)] = newParameter;
-      setFieldValue("parameters", parameters);
-    }
+    const newParameter: TParameter = {
+      id: "",
+      name: newParameterName,
+    };
+    parameters[Number(event.target.id)] = newParameter;
+    setFieldValue("parameters", parameters);
+
+    // const parameterExists = allParameters.find(
+    //   (p) => p.name === newParameterName
+    // );
+    // if (parameterExists) {
+    //   parameters[Number(event.target.id)] = parameterExists;
+    // } else {
+    //   const newParameter: TParameter = {
+    //     id: uuid(),
+    //     name: newParameterName,
+    //   };
+    //   parameters[Number(event.target.id)] = newParameter;
+    //   setFieldValue("parameters", parameters);
+    // }
   };
 
   return (
@@ -53,7 +66,7 @@ export const Parameters = ({ values, setValues, setFieldValue }: Props) => {
           gap: "0.5rem",
         }}
       >
-        {parameters.map((param, i) => {
+        {parameters?.map((param, i) => {
           return (
             <TextField
               sx={{ mt: "0.3rem", mb: "0.3rem" }}
@@ -61,7 +74,7 @@ export const Parameters = ({ values, setValues, setFieldValue }: Props) => {
               id={`${i}`}
               name="parameter"
               label="Parameter Name"
-              defaultValue={param.parameterName}
+              defaultValue={param.name}
               onChange={handleChangeParameter}
             />
           );

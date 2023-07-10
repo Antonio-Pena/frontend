@@ -1,4 +1,3 @@
-import analysisModulesService from "../../../../services/analysisModules";
 import { TParameter } from "../../../types/AnalisisModule";
 
 export const createNewParameters = (
@@ -8,7 +7,7 @@ export const createNewParameters = (
   newParameters.forEach(async (p) => {
     const foundParameter = allParameters.find((item) => item.id === p.id);
     if (!foundParameter) {
-      const { error } = await analysisModulesService.createParameter(p);
+      // const { error } = await analysisModulesService.createParameter(p);
     }
   });
 };

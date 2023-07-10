@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -12,6 +12,8 @@ import { IAnalysisModule } from "../../../types/AnalisisModule";
 import { useRouter } from "next/router";
 import { useFetch } from "../../../hooks/useFetch";
 import Skeleton from "@mui/material/Skeleton";
+import { useQuery } from "@apollo/client";
+import { GET_ANALYSIS_MODULES } from "../../../services/analysisModules/getAnalysisModules";
 
 type AnalysisModuleTableProps = {
   filterByName?: string | undefined;
@@ -26,12 +28,12 @@ const AnalysisModulesTable = ({
 }: AnalysisModuleTableProps) => {
   const router = useRouter();
 
-  const { data: analysisModules, loading } = useFetch<IAnalysisModule[]>(
-    `/analysisModules`,
-    []
-  );
+  const { data, error, loading } = useQuery(GET_ANALYSIS_MODULES);
 
-  const activeModules = analysisModules.filter((items) => items.isActive);
+  const { analysisModules }: { analysisModules: IAnalysisModule[] } =
+    data || {};
+
+  const activeModules = analysisModules?.filter((items) => items.isActive);
 
   const columns: GridColumns = [
     {
@@ -41,14 +43,14 @@ const AnalysisModulesTable = ({
       hide: true,
     },
     {
-      field: "moduleName",
+      field: "name",
       headerName: "Module Name",
       width: 200,
       headerAlign: "center",
       align: "center",
     },
     {
-      field: "moduleVersion",
+      field: "version",
       headerName: "Module Version",
       width: 150,
       headerAlign: "center",
@@ -68,7 +70,7 @@ const AnalysisModulesTable = ({
             </Tooltip>
           }
           onClick={() => {
-            router.push(`/analisisModules/${params.id}`);
+            router.push(`/analysisModules/${params.id}`);
           }}
           label="Edit"
         />,
@@ -91,14 +93,12 @@ const AnalysisModulesTable = ({
   let modulesAux: IAnalysisModule[] = [];
   if (filterByName && !filterByVersion) {
     const regexp = new RegExp(`${filterByName}`, "i");
-    modulesAux.push(
-      ...activeModules.filter((item) => regexp.test(item.moduleName))
-    );
+    modulesAux.push(...activeModules.filter((item) => regexp.test(item.name)));
   }
   if (!filterByName && filterByVersion) {
     const regexp = new RegExp(`${filterByVersion}`, "i");
     modulesAux.push(
-      ...activeModules.filter((item) => regexp.test(item.moduleVersion))
+      ...activeModules.filter((item) => regexp.test(item.version))
     );
   }
   if (filterByName && filterByVersion) {
@@ -106,9 +106,7 @@ const AnalysisModulesTable = ({
     const regexpVersion = new RegExp(`${filterByVersion}`, "i");
     modulesAux.push(
       ...activeModules.filter(
-        (item) =>
-          regexpName.test(item.moduleName) &&
-          regexpVersion.test(item.moduleVersion)
+        (item) => regexpName.test(item.name) && regexpVersion.test(item.version)
       )
     );
   }
@@ -117,12 +115,36 @@ const AnalysisModulesTable = ({
     filterByName || filterByVersion ? modulesAux : activeModules;
 
   if (loading) {
-    return <Skeleton variant="rectangular" />;
+    return (
+      <Box
+        sx={{
+          height: 380,
+          width: "80%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          borderColor: "#777777",
+        }}
+      >
+        <Skeleton
+          variant="rectangular"
+          width={1000}
+          height={300}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Loading data...
+        </Skeleton>
+      </Box>
+    );
   } else {
     return (
       <Box
         sx={{
-          height: 400,
+          height: 380,
           width: "80%",
         }}
       >

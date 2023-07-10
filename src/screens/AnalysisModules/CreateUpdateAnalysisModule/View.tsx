@@ -3,7 +3,6 @@ import { uuid } from "uuidv4";
 import { Alert, Box, Button, Typography } from "@mui/material";
 import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import { useRouter } from "next/router";
-import analysisModulesService from "../../../../services/analysisModules";
 import { Parameters } from "../../../components/ParametersImputs";
 import TextInputFormik from "../../../components/TextInputFormik";
 import { analysisModulesValidationSchema } from "../../../lib/validationSchema";
@@ -14,17 +13,9 @@ type CreateUpdateAnalysisModuleProps = {
   analysisModuleSelected?: IAnalysisModule | undefined;
   handleSubmit: (
     values: IAnalysisModule,
-    { setSubmitting, resetForm }: FormikHelpers<IAnalysisModule>
+    { resetForm }: FormikHelpers<IAnalysisModule>
   ) => void;
   successfullMessage: string;
-};
-
-const defaultAnalysisModule: IAnalysisModule = {
-  id: "",
-  moduleName: "",
-  moduleVersion: "",
-  isActive: false,
-  parameters: [],
 };
 
 const CreateUpdateAnalysisModule = ({
@@ -34,6 +25,14 @@ const CreateUpdateAnalysisModule = ({
   successfullMessage,
 }: CreateUpdateAnalysisModuleProps) => {
   const router = useRouter();
+
+  const defaultAnalysisModule: IAnalysisModule = {
+    id: "",
+    name: "",
+    version: "",
+    isActive: false,
+    parameters: [],
+  };
 
   const titleUpdateCreate = isUpdatingAnalysisModule
     ? "Update an Analysis Module"
@@ -56,21 +55,13 @@ const CreateUpdateAnalysisModule = ({
           enableReinitialize={true}
           onSubmit={handleSubmit}
         >
-          {({
-            values,
-            setValues,
-            setFieldValue,
-          }: FormikProps<IAnalysisModule>) => {
+          {({ values, setFieldValue }: FormikProps<IAnalysisModule>) => {
             return (
               <Form>
-                <TextInputFormik name="moduleName" label="Module Name" />
-                <TextInputFormik name="moduleVersion" label="Module Version" />
+                <TextInputFormik name="name" label="Module Name" />
+                <TextInputFormik name="version" label="Module Version" />
 
-                <Parameters
-                  values={values}
-                  setValues={setValues}
-                  setFieldValue={setFieldValue}
-                />
+                <Parameters values={values} setFieldValue={setFieldValue} />
                 {successfullMessage && (
                   <Box
                     sx={{

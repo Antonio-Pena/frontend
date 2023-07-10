@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import { Box, Button, TextField, Tooltip } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import { uuid } from "uuidv4";
+import React from "react";
+import { Box, TextField } from "@mui/material";
 import {
   ISetUpAnalysisModule,
   TSetUpParameter,
@@ -15,22 +13,31 @@ type Props = {
 
 export const Parameters = ({ values, setValues, setFieldValue }: Props) => {
   console.log("values", values);
-  const parameters = [...values?.parameters!];
+  const parametersAux = values?.parameters!;
+  const parameters = parametersAux?.map((item) => {
+    return { name: item.name, value: item.value };
+  });
 
   const handleChangeParameter = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    console.log("event.target", event.target.id);
     event.preventDefault();
     const parameterName = event.target.name;
     const parameterValue = event.target.value;
+    console.log("parameterName", parameterName);
+    console.log("parameterValue", parameterValue);
     const newParameter: TSetUpParameter = {
-      parameterName,
-      parameterValue,
+      name: parameterName,
+      value: parameterValue,
     };
+    console.log(
+      "parameters[Number(event.target.id)]",
+      parameters[Number(event.target.id)]
+    );
     parameters[Number(event.target.id)] = newParameter;
     setFieldValue("parameters", parameters);
   };
-  console.log("parameters", parameters);
 
   return (
     <>
@@ -42,8 +49,8 @@ export const Parameters = ({ values, setValues, setFieldValue }: Props) => {
           gap: "0.5rem",
         }}
       >
-        {parameters.map((param, i) => {
-          const empty = param.parameterValue === "" ? true : false;
+        {parameters?.map((param, i) => {
+          const empty = param.value === "" ? true : false;
           return (
             <TextField
               required
@@ -51,9 +58,9 @@ export const Parameters = ({ values, setValues, setFieldValue }: Props) => {
               sx={{ mt: "0.3rem", mb: "0.3rem" }}
               key={i}
               id={`${i}`}
-              name={param.parameterName}
-              label={param.parameterName}
-              defaultValue={param.parameterValue}
+              name={param.name}
+              label={param.name}
+              defaultValue={param.value}
               onChange={handleChangeParameter}
             />
           );

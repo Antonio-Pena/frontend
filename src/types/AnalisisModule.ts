@@ -1,14 +1,21 @@
 export interface IAnalysisModule {
   id: string;
-  moduleName: string;
-  moduleVersion: string;
+  name: string;
+  version: string;
   isActive: boolean;
   parameters?: TParameter[];
 }
 
+export interface IUpdateCreateAnalysisModule {
+  id: string;
+  name?: string;
+  version?: string;
+  parameters?: string[];
+}
+
 export type TParameter = {
   id: string;
-  parameterName: string;
+  name: string;
 };
 
 export type TModuleParameter = {
@@ -19,13 +26,22 @@ export type TModuleParameter = {
 };
 
 export type TSetUpParameter = {
-  parameterName: string;
-  parameterValue: string;
+  name: string;
+  value: string;
 };
 export interface ISetUpAnalysisModule {
   id: string;
-  moduleName: string;
-  moduleVersion: string;
+  name: string;
+  version: string;
   isActive: boolean;
+  parameters?: TSetUpParameter[];
+}
+
+export interface ICreateSetUpAnalysisModule {
+  analysisModuleId: string;
+  parameters?: TSetUpParameter[];
+}
+export interface IUpdateSetUpAnalysisModule {
+  id: string;
   parameters?: TSetUpParameter[];
 }
