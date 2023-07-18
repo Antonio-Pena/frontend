@@ -10,7 +10,6 @@ interface Props {
 
 const TextInputFormik = ({ label, ...props }: Props) => {
   const [field, meta] = useField(props);
-
   return (
     <TextField
       label={label}
@@ -19,6 +18,7 @@ const TextInputFormik = ({ label, ...props }: Props) => {
       variant="outlined"
       error={meta.touched && Boolean(meta.error)}
       helperText={meta.touched && meta.error}
+      InputLabelProps={{ shrink: field.value }}
       {...field}
       {...props}
     />

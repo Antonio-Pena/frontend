@@ -77,7 +77,7 @@ const View = () => {
           }}
         >
           <Typography variant="h3" component="h1">
-            Analysis Modules
+            Analysis modules
           </Typography>
         </Box>
         {successfullDeleteMessage && (

@@ -3,6 +3,7 @@ import {
   DataGrid,
   GridActionsCellItem,
   GridColumns,
+  GridEventListener,
   GridRowParams,
 } from "@mui/x-data-grid";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -17,11 +18,13 @@ import { GET_ANALYSIS_MODULES } from "../../../services/analysisModules/getAnaly
 type AnalysisModuleTableProps = {
   filterByName?: string | undefined;
   filterByVersion?: string | undefined;
+  pipelineSelectedId?: string | undefined;
 };
 
 const AnalysisModulesTable = ({
   filterByName,
   filterByVersion,
+  pipelineSelectedId,
 }: AnalysisModuleTableProps) => {
   const router = useRouter();
 
@@ -45,14 +48,14 @@ const AnalysisModulesTable = ({
     },
     {
       field: "name",
-      headerName: "Module Name",
+      headerName: "Module name",
       width: 200,
       headerAlign: "center",
       align: "center",
     },
     {
       field: "version",
-      headerName: "Module Version",
+      headerName: "Module version",
       width: 150,
       headerAlign: "center",
       align: "center",
@@ -73,7 +76,7 @@ const AnalysisModulesTable = ({
           onClick={() => {
             router.push({
               pathname: "/settingAnalysisModules/Module",
-              query: { moduleId: params.id },
+              query: { moduleId: params.id, pipelineId: pipelineSelectedId },
             });
           }}
           label="Set"
@@ -105,6 +108,13 @@ const AnalysisModulesTable = ({
 
   const analysisModulesToShow =
     filterByName || filterByVersion ? modulesAux : activeModules;
+
+  const handleRowClick: GridEventListener<"rowClick"> = (params) => {
+    router.push({
+      pathname: "/settingAnalysisModules/readonly",
+      query: { pipelineId: pipelineSelectedId, moduleId: params.id },
+    });
+  };
 
   if (loading) {
     return (
@@ -145,6 +155,7 @@ const AnalysisModulesTable = ({
           columns={columns}
           pageSize={5}
           rowsPerPageOptions={[5]}
+          onRowClick={handleRowClick}
         />
       </Box>
     );

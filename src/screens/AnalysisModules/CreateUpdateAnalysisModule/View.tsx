@@ -35,8 +35,8 @@ const CreateUpdateAnalysisModule = ({
   };
 
   const titleUpdateCreate = isUpdatingAnalysisModule
-    ? "Update an Analysis Module"
-    : "Create an Analysis Module";
+    ? "Update an analysis module"
+    : "Create an analysis module";
 
   const renderForm = () => {
     const initialValuesAux: IAnalysisModule = isUpdatingAnalysisModule
@@ -58,8 +58,8 @@ const CreateUpdateAnalysisModule = ({
           {({ values, setFieldValue }: FormikProps<IAnalysisModule>) => {
             return (
               <Form>
-                <TextInputFormik name="name" label="Module Name" />
-                <TextInputFormik name="version" label="Module Version" />
+                <TextInputFormik name="name" label="Module name" />
+                <TextInputFormik name="version" label="Module version" />
 
                 <Parameters values={values} setFieldValue={setFieldValue} />
                 {successfullMessage && (

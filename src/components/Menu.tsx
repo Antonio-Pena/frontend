@@ -5,11 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useRouter } from "next/router";
 
-const options = [
-  "Analysis Modules",
-  "Set Up Analisis Modules",
-  "Set Up Pipeline Assesment",
-];
+const options = ["Analysis modules", "Assesment pipeline"];
 
 const ITEM_HEIGHT = 40;
 
@@ -26,11 +22,7 @@ export default function LongMenu() {
   };
   const handleClickOption = (option: string) => {
     const route =
-      option === "Analysis Modules"
-        ? "/"
-        : option === "Set Up Analisis Modules"
-        ? "/settingAnalysisModules"
-        : "/settingUpPipelineAssesment";
+      option === "Analysis modules" ? "/" : "/settingUpPipelineAssesment";
     router.push(`${route}`);
     setAnchorEl(null);
   };

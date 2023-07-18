@@ -35,13 +35,28 @@ export interface ISetUpAnalysisModule {
   version: string;
   isActive: boolean;
   parameters?: TSetUpParameter[];
+  pipelineId?: string;
 }
 
 export interface ICreateSetUpAnalysisModule {
   analysisModuleId: string;
   parameters?: TSetUpParameter[];
+  pipelineId: string;
 }
 export interface IUpdateSetUpAnalysisModule {
   id: string;
   parameters?: TSetUpParameter[];
+}
+
+export interface ISetUpPipelineAssesment {
+  id: string;
+  name: string;
+  version: string;
+  isActive: boolean;
+}
+
+export interface IUpdateCreatePipeline {
+  id: string;
+  name: string;
+  version: string;
 }

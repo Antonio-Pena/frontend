@@ -3,6 +3,7 @@ import {
   DataGrid,
   GridActionsCellItem,
   GridColumns,
+  GridEventListener,
   GridRowParams,
 } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -18,12 +19,14 @@ type AnalysisModuleTableProps = {
   filterByName?: string | undefined;
   filterByVersion?: string | undefined;
   handleDelete: (isDeleting: boolean, moduleId: string) => void;
+  pipelineSelectedId?: string;
 };
 
 const SetUpAnalysisModulesTable = ({
   filterByName,
   filterByVersion,
   handleDelete,
+  pipelineSelectedId,
 }: AnalysisModuleTableProps) => {
   const router = useRouter();
 
@@ -38,7 +41,9 @@ const SetUpAnalysisModulesTable = ({
   }: { setUpAnalisisModules: ISetUpAnalysisModule[] } =
     setUpAnalysisModulesData || {};
 
-  const activeModules = setUpAnalisisModules?.filter((items) => items.isActive);
+  const activeModulesInPipeline = setUpAnalisisModules?.filter(
+    (items) => items.isActive && items.pipelineId === pipelineSelectedId
+  );
 
   const columns: GridColumns = [
     {
@@ -49,14 +54,14 @@ const SetUpAnalysisModulesTable = ({
     },
     {
       field: "name",
-      headerName: "Module Name",
+      headerName: "Module name",
       width: 200,
       headerAlign: "center",
       align: "center",
     },
     {
       field: "version",
-      headerName: "Module Version",
+      headerName: "Module version",
       width: 150,
       headerAlign: "center",
       align: "center",
@@ -77,7 +82,11 @@ const SetUpAnalysisModulesTable = ({
           onClick={() => {
             router.push({
               pathname: "/settingAnalysisModules/Module",
-              query: { isEditing: true, moduleId: params.id },
+              query: {
+                isEditing: true,
+                moduleId: params.id,
+                pipelineId: pipelineSelectedId,
+              },
             });
           }}
           label="Edit"
@@ -101,26 +110,35 @@ const SetUpAnalysisModulesTable = ({
   let modulesAux: ISetUpAnalysisModule[] = [];
   if (filterByName && !filterByVersion) {
     const regexp = new RegExp(`${filterByName}`, "i");
-    modulesAux.push(...activeModules.filter((item) => regexp.test(item.name)));
+    modulesAux.push(
+      ...activeModulesInPipeline.filter((item) => regexp.test(item.name))
+    );
   }
   if (!filterByName && filterByVersion) {
     const regexp = new RegExp(`${filterByVersion}`, "i");
     modulesAux.push(
-      ...activeModules.filter((item) => regexp.test(item.version))
+      ...activeModulesInPipeline.filter((item) => regexp.test(item.version))
     );
   }
   if (filterByName && filterByVersion) {
     const regexpName = new RegExp(`${filterByName}`, "i");
     const regexpVersion = new RegExp(`${filterByVersion}`, "i");
     modulesAux.push(
-      ...activeModules.filter(
+      ...activeModulesInPipeline.filter(
         (item) => regexpName.test(item.name) && regexpVersion.test(item.version)
       )
     );
   }
 
   const analysisModulesToShow =
-    filterByName || filterByVersion ? modulesAux : activeModules;
+    filterByName || filterByVersion ? modulesAux : activeModulesInPipeline;
+
+  const handleRowClick: GridEventListener<"rowClick"> = (params) => {
+    router.push({
+      pathname: "/settingUpPipelineAssesment/readonly",
+      query: { pipelineId: pipelineSelectedId, setUpModuleId: params.id },
+    });
+  };
 
   if (loading) {
     return (
@@ -161,6 +179,7 @@ const SetUpAnalysisModulesTable = ({
           columns={columns}
           pageSize={5}
           rowsPerPageOptions={[5]}
+          onRowClick={handleRowClick}
         />
       </Box>
     );

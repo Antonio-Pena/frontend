@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -6,35 +6,41 @@ import {
   GridEventListener,
   GridRowParams,
 } from "@mui/x-data-grid";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import { Box, Tooltip } from "@mui/material";
-import { IAnalysisModule } from "../../../types/AnalisisModule";
+import { ISetUpPipelineAssesment } from "../../../types/AnalisisModule";
 import { useRouter } from "next/router";
-import { useFetch } from "../../../hooks/useFetch";
 import Skeleton from "@mui/material/Skeleton";
 import { useQuery } from "@apollo/client";
-import { GET_ANALYSIS_MODULES } from "../../../services/analysisModules/getAnalysisModules";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { GET_SET_UP_PIPELINES_ASSESMENT } from "../../../services/setUpPipelineAssesment/queriesSetUpPipelineAssesment";
 
-type AnalysisModuleTableProps = {
+type SetUpPipelineAssesmentTableProps = {
   filterByName?: string | undefined;
   filterByVersion?: string | undefined;
-  handleDelete: (isDeleting: boolean, moduleId: string) => void;
+  handleDelete: (isDeleting: boolean, pipelineId: string) => void;
 };
 
-const AnalysisModulesTable = ({
+const SetUpPipelineAssesmentTable = ({
   filterByName,
   filterByVersion,
   handleDelete,
-}: AnalysisModuleTableProps) => {
+}: SetUpPipelineAssesmentTableProps) => {
   const router = useRouter();
 
-  const { data, error, loading } = useQuery(GET_ANALYSIS_MODULES);
+  const {
+    data: setUpPipelinesAssesmentData,
+    error,
+    loading,
+  } = useQuery(GET_SET_UP_PIPELINES_ASSESMENT);
 
-  const { analysisModules }: { analysisModules: IAnalysisModule[] } =
-    data || {};
+  const {
+    setUpPipelinesAssesment,
+  }: { setUpPipelinesAssesment: ISetUpPipelineAssesment[] } =
+    setUpPipelinesAssesmentData || {};
 
-  const activeModules = analysisModules?.filter((items) => items.isActive);
+  const activeSetUpPipelinesAssesment =
+    setUpPipelinesAssesment?.filter((items) => items.isActive) || [];
 
   const columns: GridColumns = [
     {
@@ -45,14 +51,14 @@ const AnalysisModulesTable = ({
     },
     {
       field: "name",
-      headerName: "Module name",
+      headerName: "Pipeline name",
       width: 200,
       headerAlign: "center",
       align: "center",
     },
     {
       field: "version",
-      headerName: "Module version",
+      headerName: "Pipeline version",
       width: 150,
       headerAlign: "center",
       align: "center",
@@ -71,7 +77,7 @@ const AnalysisModulesTable = ({
             </Tooltip>
           }
           onClick={() => {
-            router.push(`/analysisModules/${params.id}`);
+            router.push(`/settingUpPipelineAssesment/${params.id}`);
           }}
           label="Edit"
         />,
@@ -91,32 +97,41 @@ const AnalysisModulesTable = ({
     },
   ];
 
-  let modulesAux: IAnalysisModule[] = [];
+  let pipelineAux: ISetUpPipelineAssesment[] = [];
   if (filterByName && !filterByVersion) {
     const regexp = new RegExp(`${filterByName}`, "i");
-    modulesAux.push(...activeModules.filter((item) => regexp.test(item.name)));
+    pipelineAux.push(
+      ...activeSetUpPipelinesAssesment.filter((item) => regexp.test(item.name))
+    );
   }
   if (!filterByName && filterByVersion) {
     const regexp = new RegExp(`${filterByVersion}`, "i");
-    modulesAux.push(
-      ...activeModules.filter((item) => regexp.test(item.version))
+    pipelineAux.push(
+      ...activeSetUpPipelinesAssesment.filter((item) =>
+        regexp.test(item.version)
+      )
     );
   }
   if (filterByName && filterByVersion) {
     const regexpName = new RegExp(`${filterByName}`, "i");
     const regexpVersion = new RegExp(`${filterByVersion}`, "i");
-    modulesAux.push(
-      ...activeModules.filter(
-        (item) => regexpName.test(item.name) && regexpVersion.test(item.version)
+    pipelineAux.push(
+      ...activeSetUpPipelinesAssesment.filter(
+        (item) => regexpName.test(item.name) && regexpVersion.test(item.name)
       )
     );
   }
 
-  const analysisModulesToShow =
-    filterByName || filterByVersion ? modulesAux : activeModules;
+  const pipelinesToShow =
+    filterByName || filterByVersion
+      ? pipelineAux
+      : activeSetUpPipelinesAssesment;
 
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
-    router.push(`/analysisModules/readonly/${params.id}`);
+    router.push({
+      pathname: "/settingUpPipelineAssesment/pipeline",
+      query: { pipelineId: params.id },
+    });
   };
 
   if (loading) {
@@ -149,12 +164,12 @@ const AnalysisModulesTable = ({
     return (
       <Box
         sx={{
-          height: 380,
+          height: 400,
           width: "80%",
         }}
       >
         <DataGrid
-          rows={analysisModulesToShow}
+          rows={pipelinesToShow}
           columns={columns}
           pageSize={5}
           rowsPerPageOptions={[5]}
@@ -165,4 +180,4 @@ const AnalysisModulesTable = ({
   }
 };
 
-export default AnalysisModulesTable;
+export default SetUpPipelineAssesmentTable;

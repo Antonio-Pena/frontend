@@ -11,6 +11,7 @@ export const GET_SET_UP_ANALYSIS_MODULES = gql`
         name
         value
       }
+      pipelineId
     }
   }
 `;
@@ -26,6 +27,7 @@ export const GET_SET_UP_ANALYSIS_MODULE = gql`
         name
         value
       }
+      pipelineId
     }
   }
 `;

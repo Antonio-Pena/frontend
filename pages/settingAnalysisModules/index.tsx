@@ -1,8 +1,12 @@
 import React from "react";
-import AnalysisModules from "../../src/screens/PipelineAssesments/View";
+import AnalysisModules from "../../src/screens/AnalysisModules/ModulesSelection/View";
+import { useRouter } from "next/router";
 
-const analysisModulesToSet = () => {
-  return <AnalysisModules />;
+const SettingPipeline = () => {
+  const router = useRouter();
+  const { pipelineId } = router.query;
+  const pipelineSelectedId = pipelineId ? (pipelineId as string) : "";
+  return <AnalysisModules pipelineSelectedId={pipelineSelectedId} />;
 };
 
-export default analysisModulesToSet;
+export default SettingPipeline;

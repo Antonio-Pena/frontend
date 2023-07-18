@@ -22,25 +22,13 @@ import { GET_SET_UP_ANALYSIS_MODULE } from "../../../services/setUpAnalysisModul
 type Props = {
   isEditingAnalysisModule?: boolean;
   analysisModuleId: string;
-};
-const defaultAnalysisModule: IAnalysisModule = {
-  id: "",
-  name: "",
-  version: "",
-  parameters: [],
-  isActive: false,
-};
-const defaultSetAnalysisModule: ISetUpAnalysisModule = {
-  id: "",
-  name: "",
-  version: "",
-  parameters: [],
-  isActive: false,
+  pipelineSelectedId?: string | undefined;
 };
 
 const SetEditAnalysisModuleContainer = ({
   isEditingAnalysisModule,
   analysisModuleId,
+  pipelineSelectedId,
 }: Props) => {
   const router = useRouter();
   const [successfullMessage, setSuccessfullMessage] = useState<string>("");
@@ -96,6 +84,7 @@ const SetEditAnalysisModuleContainer = ({
       const setUpAnalisysModuleToCreate: ICreateSetUpAnalysisModule = {
         analysisModuleId,
         parameters,
+        pipelineId: pipelineSelectedId!,
       };
       SetUpAnalysisModuleCreate({
         variables: { input: setUpAnalisysModuleToCreate },
@@ -108,7 +97,10 @@ const SetEditAnalysisModuleContainer = ({
     );
     setTimeout(() => {
       setSuccessfullMessage("");
-      router.push(`/settingUpPipelineAssesment`);
+      router.push({
+        pathname: "/settingUpPipelineAssesment/pipeline",
+        query: { pipelineId: pipelineSelectedId },
+      });
     }, 1000);
   };
 

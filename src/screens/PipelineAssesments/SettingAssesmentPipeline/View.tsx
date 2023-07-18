@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Alert, Box, Button, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import WarningIcon from "@mui/icons-material/Warning";
 import { ISetUpAnalysisModule } from "../../../types/AnalisisModule";
@@ -7,10 +7,11 @@ import { useFetch } from "../../../hooks/useFetch";
 import Filter from "../../../components/Filter";
 import SetUpAnalysisModulesTable from "../components/SetUpAnalysisModulesTable";
 import CustomModal from "../../../components/Modal";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { DELETE_SET_UP_ANALYSIS_MODULE } from "../../../services/setUpAnalysisModule/mutateSetUpAnalysisModule";
+import { GET_SET_UP_ANALYSIS_MODULES } from "../../../services/setUpAnalysisModule/queryAnalysisModules";
 
-const View = () => {
+const View = ({ pipelineSelectedId }: { pipelineSelectedId?: string }) => {
   const [filterByName, setFilterByName] = useState<string>("");
   const [filterByVersion, setFilterByVersion] = useState<string>("");
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
@@ -20,10 +21,10 @@ const View = () => {
 
   const router = useRouter();
 
-  const { data: allSetUpModules } = useFetch<ISetUpAnalysisModule[]>(
-    `/setUpAnalysisModules`,
-    []
-  );
+  const { data, error, loading } = useQuery(GET_SET_UP_ANALYSIS_MODULES);
+  const {
+    setUpAnalisisModules,
+  }: { setUpAnalisisModules: ISetUpAnalysisModule[] } = data || {};
 
   const [SetUpAnalysisModuleDelete, { error: errorDeleting }] = useMutation(
     DELETE_SET_UP_ANALYSIS_MODULE
@@ -37,7 +38,10 @@ const View = () => {
   };
 
   const handleAddNewModule = () => {
-    router.push(`/settingAnalysisModules`);
+    router.push({
+      pathname: "/settingAnalysisModules",
+      query: { pipelineId: pipelineSelectedId },
+    });
   };
 
   const handleDeleteModule = (isDeleting: boolean, moduleId: string) => {
@@ -47,7 +51,7 @@ const View = () => {
 
   const onConfirmDeleting = () => {
     const idAux = moduleIdToDelete;
-    const moduleToDelete = allSetUpModules.find((m) => m.id === idAux);
+    const moduleToDelete = setUpAnalisisModules.find((m) => m.id === idAux);
 
     SetUpAnalysisModuleDelete({
       variables: { setUpAnalysisModuleDeleteId: idAux },
@@ -67,13 +71,24 @@ const View = () => {
       <Box
         sx={{
           padding: "3rem",
+          pb: successfullDeleteMessage ? 0 : 3,
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Typography variant="h3" component="h1">
-            Setting Up an Assesment Pipeline
+            Setting up an assesment pipeline
           </Typography>
         </Box>
+        {successfullDeleteMessage && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Alert severity="success">{successfullDeleteMessage}</Alert>
+          </Box>
+        )}
         <Box
           sx={{
             display: "flex",
@@ -119,6 +134,7 @@ const View = () => {
             filterByName={filterByName}
             filterByVersion={filterByVersion}
             handleDelete={handleDeleteModule}
+            pipelineSelectedId={pipelineSelectedId}
           />
           <Box
             sx={{

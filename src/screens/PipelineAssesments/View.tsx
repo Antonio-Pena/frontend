@@ -1,20 +1,71 @@
 import React, { useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Filter from "../../components/Filter";
 import AnalysisModulesTable from "./components/AnalysisModulesTable";
 import { useRouter } from "next/router";
 import { useFetch } from "../../hooks/useFetch";
-import { IAnalysisModule } from "../../types/AnalisisModule";
+import {
+  IAnalysisModule,
+  ISetUpPipelineAssesment,
+} from "../../types/AnalisisModule";
+import SetUpPipelineAssesmentTable from "./components/SetUpPipelineAssesmentTable";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_SET_UP_PIPELINES_ASSESMENT } from "../../services/setUpPipelineAssesment/queriesSetUpPipelineAssesment";
+import { DELETE_SET_UP_PIPELINE_ASSESMENT } from "../../services/setUpPipelineAssesment/mutateSetUpPipelineAssesment";
+import CustomModal from "../../components/Modal";
+import WarningIcon from "@mui/icons-material/Warning";
 
 const View = () => {
   const [filterByName, setFilterByName] = useState<string>("");
   const [filterByVersion, setFilterByVersion] = useState<string>("");
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [pipelineIdToDelete, setPipelineIdToDelete] = useState<string>("");
+  const [successfullDeleteMessage, setSuccessfullDeleteMessage] =
+    useState<string>("");
 
-  const searchModuleByName = (search: string) => {
+  const router = useRouter();
+
+  const { data, error, loading } = useQuery(GET_SET_UP_PIPELINES_ASSESMENT);
+  const {
+    setUpPipelinesAssesment,
+  }: { setUpPipelinesAssesment: ISetUpPipelineAssesment[] } = data || {};
+
+  const [SetUpPipelineAssesmentDelete, { error: errorDeleting }] = useMutation(
+    DELETE_SET_UP_PIPELINE_ASSESMENT
+  );
+
+  const searchPipelineByName = (search: string) => {
     setFilterByName(search);
   };
   const searchModuleByVersion = (search: string) => {
     setFilterByVersion(search);
+  };
+
+  const handleCreatePipeline = () => {
+    router.push(`/settingUpPipelineAssesment/newPipeline`);
+  };
+
+  const handleDeletePipeline = (isDeleting: boolean, pipelineId: string) => {
+    setIsDeleting(isDeleting);
+    setPipelineIdToDelete(pipelineId);
+  };
+
+  const onConfirmDeleting = () => {
+    const idAux = pipelineIdToDelete;
+    const moduleToDelete = setUpPipelinesAssesment?.find(
+      (m: IAnalysisModule) => m.id === idAux
+    );
+    SetUpPipelineAssesmentDelete({
+      variables: { setUpPipelineAssesmentDeleteId: idAux },
+    });
+    setIsDeleting(false);
+    setSuccessfullDeleteMessage(
+      `El módulo ${moduleToDelete?.name} ha sido borrado`
+    );
+    setTimeout(() => {
+      setSuccessfullDeleteMessage("");
+      router.push(`/settingUpPipelineAssesment`);
+    }, 1500);
   };
 
   return (
@@ -26,7 +77,7 @@ const View = () => {
       >
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Typography variant="h3" component="h1">
-            Analysis Modules
+            Assesment pipelines
           </Typography>
         </Box>
         <Box
@@ -51,7 +102,7 @@ const View = () => {
               <Filter
                 id="byName"
                 label="Filter by name:"
-                onSearch={searchModuleByName}
+                onSearch={searchPipelineByName}
               />
               <Filter
                 id="byVersion"
@@ -59,14 +110,34 @@ const View = () => {
                 onSearch={searchModuleByVersion}
               />
             </Box>
+            <Box>
+              <Button
+                sx={{ mt: 1, mr: 1 }}
+                variant="contained"
+                onClick={handleCreatePipeline}
+              >
+                CREATE PIPELINE
+              </Button>
+            </Box>
           </Box>
 
-          <AnalysisModulesTable
+          <SetUpPipelineAssesmentTable
             filterByName={filterByName}
             filterByVersion={filterByVersion}
+            handleDelete={handleDeletePipeline}
           />
         </Box>
       </Box>
+      {isDeleting && (
+        <CustomModal
+          icon={<WarningIcon />}
+          title="Delete pipeline assesment"
+          onClose={() => {
+            setIsDeleting(false);
+          }}
+          onConfirmAction={onConfirmDeleting}
+        />
+      )}
     </>
   );
 };

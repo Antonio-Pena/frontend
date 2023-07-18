@@ -1,57 +1,53 @@
 import React, { useState } from "react";
-import { Alert, Box, Button, TextField, Typography } from "@mui/material";
+import { uuid } from "uuidv4";
+import { Alert, Box, Button, Typography } from "@mui/material";
 import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import { useRouter } from "next/router";
+import { Parameters } from "../../../components/ParametersImputs";
 import TextInputFormik from "../../../components/TextInputFormik";
 import { analysisModulesValidationSchema } from "../../../lib/validationSchema";
 import {
   IAnalysisModule,
-  ISetUpAnalysisModule,
+  ISetUpPipelineAssesment,
 } from "../../../types/AnalisisModule";
-import { Parameters } from "../components/ParametersValuesImputs";
 
-type SetEditAnalysisModuleProps = {
-  isEditingAnalysisModule?: boolean;
-  analysisModuleSelected?: IAnalysisModule | undefined;
-  setAnalisisModuleSelected?: ISetUpAnalysisModule | undefined;
+type CreateUpdatePipelineProps = {
+  isUpdatingPipeline?: boolean;
+  pipelineSelected?: ISetUpPipelineAssesment | undefined;
   handleSubmit: (
-    values: ISetUpAnalysisModule,
-    { setSubmitting, resetForm }: FormikHelpers<ISetUpAnalysisModule>
+    values: ISetUpPipelineAssesment,
+    { resetForm }: FormikHelpers<ISetUpPipelineAssesment>
   ) => void;
   successfullMessage: string;
 };
 
-const SetEditAnalysisModule = ({
-  isEditingAnalysisModule,
-  analysisModuleSelected,
-  setAnalisisModuleSelected,
+const CreateUpdatePipeline = ({
+  isUpdatingPipeline,
+  pipelineSelected,
   handleSubmit,
   successfullMessage,
-}: SetEditAnalysisModuleProps) => {
+}: CreateUpdatePipelineProps) => {
   const router = useRouter();
 
-  const analysisModuleInitialValues: ISetUpAnalysisModule = {
+  const defaultPipeline: IAnalysisModule = {
     id: "",
-    name: analysisModuleSelected?.name!,
-    version: analysisModuleSelected?.version!,
+    name: "",
+    version: "",
     isActive: false,
-    parameters: analysisModuleSelected?.parameters?.map((p) => {
-      return { name: p.name, value: "" };
-    }),
   };
 
-  const titleSetEdit = isEditingAnalysisModule
-    ? "Editing an set up analysis module"
-    : "Setting Up an analysis module";
+  const titleUpdateCreate = isUpdatingPipeline
+    ? "Update an assesment pipeline"
+    : "Create an assesment pipeline";
 
   const renderForm = () => {
-    const initialValuesAux: ISetUpAnalysisModule = isEditingAnalysisModule
-      ? setAnalisisModuleSelected!
-      : analysisModuleInitialValues!;
+    const initialValuesAux: IAnalysisModule = isUpdatingPipeline
+      ? pipelineSelected!
+      : defaultPipeline;
 
-    const labelSubmitButton = isEditingAnalysisModule
-      ? "UPDATE MODULE"
-      : "ADD MODULE";
+    const labelSubmitButton = isUpdatingPipeline
+      ? "UPDATE PIPELINE"
+      : "CREATE PIPELINE";
 
     return (
       <>
@@ -61,27 +57,12 @@ const SetEditAnalysisModule = ({
           enableReinitialize={true}
           onSubmit={handleSubmit}
         >
-          {({
-            values,
-            setValues,
-            setFieldValue,
-          }: FormikProps<ISetUpAnalysisModule>) => {
-            const moduleName = values?.name;
-
+          {({ values, setFieldValue }: FormikProps<IAnalysisModule>) => {
             return (
               <Form>
-                <TextInputFormik disabled name="name" label="Module name" />
-                <TextInputFormik
-                  disabled
-                  name="version"
-                  label="Module version"
-                />
+                <TextInputFormik name="name" label="Pipeline name" />
+                <TextInputFormik name="version" label="Pipeline version" />
 
-                <Parameters
-                  values={values}
-                  setValues={setValues}
-                  setFieldValue={setFieldValue}
-                />
                 {successfullMessage && (
                   <Box
                     sx={{
@@ -134,7 +115,7 @@ const SetEditAnalysisModule = ({
     >
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Typography variant="h3" component="h1">
-          {titleSetEdit}
+          {titleUpdateCreate}
         </Typography>
       </Box>
       <Box
@@ -153,4 +134,4 @@ const SetEditAnalysisModule = ({
   );
 };
 
-export default SetEditAnalysisModule;
+export default CreateUpdatePipeline;

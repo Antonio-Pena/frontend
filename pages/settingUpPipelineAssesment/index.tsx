@@ -1,5 +1,5 @@
 import React from "react";
-import View from "../../src/screens/PipelineAssesments/SettingAssesmentPipeline/View";
+import View from "../../src/screens/PipelineAssesments/View";
 
 const SettingUpAssesmentPipeline = () => {
   return <View />;
