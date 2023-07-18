@@ -15,7 +15,9 @@ type Props = {
 export const Parameters = ({ values, setFieldValue }: Props) => {
   // const { data: allParameters } = useFetch<TParameter[]>(`/parameters`, []);
 
-  const { data, error, loading } = useQuery(GET_PARAMETERS);
+  const { data, error, loading } = useQuery(GET_PARAMETERS, {
+    pollInterval: 500,
+  });
 
   const { parameters: allParameters }: { parameters: TParameter[] } =
     data || {};

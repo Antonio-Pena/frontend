@@ -10,7 +10,9 @@ type Props = {
 };
 
 export const Parameters = ({ values }: Props) => {
-  const { data, error, loading } = useQuery(GET_PARAMETERS);
+  const { data, error, loading } = useQuery(GET_PARAMETERS, {
+    pollInterval: 500,
+  });
 
   const { parameters: allParameters }: { parameters: TParameter[] } =
     data || {};

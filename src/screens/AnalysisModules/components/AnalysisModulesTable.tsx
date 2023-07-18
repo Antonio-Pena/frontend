@@ -29,7 +29,9 @@ const AnalysisModulesTable = ({
 }: AnalysisModuleTableProps) => {
   const router = useRouter();
 
-  const { data, error, loading } = useQuery(GET_ANALYSIS_MODULES);
+  const { data, error, loading } = useQuery(GET_ANALYSIS_MODULES, {
+    pollInterval: 500,
+  });
 
   const { analysisModules }: { analysisModules: IAnalysisModule[] } =
     data || {};

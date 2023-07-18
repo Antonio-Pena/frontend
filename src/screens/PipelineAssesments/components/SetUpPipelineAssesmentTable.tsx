@@ -32,7 +32,9 @@ const SetUpPipelineAssesmentTable = ({
     data: setUpPipelinesAssesmentData,
     error,
     loading,
-  } = useQuery(GET_SET_UP_PIPELINES_ASSESMENT);
+  } = useQuery(GET_SET_UP_PIPELINES_ASSESMENT, {
+    pollInterval: 500,
+  });
 
   const {
     setUpPipelinesAssesment,

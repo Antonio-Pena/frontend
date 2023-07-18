@@ -25,7 +25,9 @@ const View = () => {
 
   const router = useRouter();
 
-  const { data, error, loading } = useQuery(GET_SET_UP_PIPELINES_ASSESMENT);
+  const { data, error, loading } = useQuery(GET_SET_UP_PIPELINES_ASSESMENT, {
+    pollInterval: 500,
+  });
   const {
     setUpPipelinesAssesment,
   }: { setUpPipelinesAssesment: ISetUpPipelineAssesment[] } = data || {};

@@ -29,6 +29,7 @@ const CreateUpdatePipelineContainer = ({ isUpdatingPipeline }: Props) => {
     loading: loadingData,
   } = useQuery(GET_SET_UP_PIPELINE_ASSESMENT, {
     variables: { pipelineAssesmentId: id },
+    pollInterval: 500,
   });
   const {
     setUpPipelineAssesment: setUpPipelineSelected,

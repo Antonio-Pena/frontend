@@ -32,7 +32,9 @@ const AnalysisModulesTable = ({
     data: analysisModulesData,
     error,
     loading,
-  } = useQuery(GET_ANALYSIS_MODULES);
+  } = useQuery(GET_ANALYSIS_MODULES, {
+    pollInterval: 500,
+  });
 
   const { analysisModules }: { analysisModules: IAnalysisModule[] } =
     analysisModulesData || {};

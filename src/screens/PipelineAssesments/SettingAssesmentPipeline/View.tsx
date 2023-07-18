@@ -21,7 +21,9 @@ const View = ({ pipelineSelectedId }: { pipelineSelectedId?: string }) => {
 
   const router = useRouter();
 
-  const { data, error, loading } = useQuery(GET_SET_UP_ANALYSIS_MODULES);
+  const { data, error, loading } = useQuery(GET_SET_UP_ANALYSIS_MODULES, {
+    pollInterval: 500,
+  });
   const {
     setUpAnalisisModules,
   }: { setUpAnalisisModules: ISetUpAnalysisModule[] } = data || {};

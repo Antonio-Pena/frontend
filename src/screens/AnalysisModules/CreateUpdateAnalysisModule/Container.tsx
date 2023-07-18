@@ -41,6 +41,7 @@ const CreateUpdateAnalysisModuleContainer = ({
     loading: loadingData,
   } = useQuery(GET_ANALYSIS_MODULE, {
     variables: { analysisModuleId: id },
+    pollInterval: 500,
   });
   const {
     analysisModule: analysisModuleSelected,

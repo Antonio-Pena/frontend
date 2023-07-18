@@ -34,7 +34,9 @@ const SetUpAnalysisModulesTable = ({
     data: setUpAnalysisModulesData,
     error,
     loading,
-  } = useQuery(GET_SET_UP_ANALYSIS_MODULES);
+  } = useQuery(GET_SET_UP_ANALYSIS_MODULES, {
+    pollInterval: 500,
+  });
 
   const {
     setUpAnalisisModules,

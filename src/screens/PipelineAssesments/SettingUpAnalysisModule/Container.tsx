@@ -39,6 +39,7 @@ const SetEditAnalysisModuleContainer = ({
     loading: loadingData,
   } = useQuery(GET_ANALYSIS_MODULE, {
     variables: { analysisModuleId },
+    pollInterval: 500,
   });
   const {
     analysisModule: analysisModuleSelected,
@@ -50,6 +51,7 @@ const SetEditAnalysisModuleContainer = ({
     loading: loadingSetUpAnalisisModuleData,
   } = useQuery(GET_SET_UP_ANALYSIS_MODULE, {
     variables: { analysisModuleId },
+    pollInterval: 500,
   });
   const {
     setUpAnalysisModule: setUpAnalysisModuleSelected,
