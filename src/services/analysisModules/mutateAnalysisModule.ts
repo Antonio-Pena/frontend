@@ -1,4 +1,4 @@
-import { DocumentNode, gql } from "@apollo/client";
+import { gql } from "@apollo/client";
 
 export const UPDATE_ANALYSIS_MODULE = gql`
   mutation AnalysisModuleUpdate($input: UpdateAnalysisModuleInput!) {

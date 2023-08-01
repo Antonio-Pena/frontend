@@ -10,6 +10,10 @@ import CustomModal from "../../../components/Modal";
 import { useMutation, useQuery } from "@apollo/client";
 import { DELETE_SET_UP_ANALYSIS_MODULE } from "../../../services/setUpAnalysisModule/mutateSetUpAnalysisModule";
 import { GET_SET_UP_ANALYSIS_MODULES } from "../../../services/setUpAnalysisModule/queryAnalysisModules";
+import {
+  RUN_PIPELINE,
+  STOP_PIPELINE,
+} from "../../../services/execStopPipeline";
 
 const View = ({ pipelineSelectedId }: { pipelineSelectedId?: string }) => {
   const [filterByName, setFilterByName] = useState<string>("");
@@ -31,6 +35,9 @@ const View = ({ pipelineSelectedId }: { pipelineSelectedId?: string }) => {
   const [SetUpAnalysisModuleDelete, { error: errorDeleting }] = useMutation(
     DELETE_SET_UP_ANALYSIS_MODULE
   );
+
+  const [RunPipeline, { error: errorRunning }] = useMutation(RUN_PIPELINE);
+  const [StopPipeline, { error: errorStoping }] = useMutation(STOP_PIPELINE);
 
   const searchModuleByName = (search: string) => {
     setFilterByName(search);
@@ -150,11 +157,15 @@ const View = ({ pipelineSelectedId }: { pipelineSelectedId?: string }) => {
               color="warning"
               sx={{ mt: 1, mr: 1 }}
               variant="contained"
-              onClick={() => {}}
+              onClick={() => StopPipeline()}
             >
               STOP
             </Button>
-            <Button sx={{ mt: 1, mr: 1 }} variant="contained">
+            <Button
+              sx={{ mt: 1, mr: 1 }}
+              variant="contained"
+              onClick={() => RunPipeline()}
+            >
               EXECUTE
             </Button>
           </Box>
