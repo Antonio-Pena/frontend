@@ -164,7 +164,11 @@ const View = ({ pipelineSelectedId }: { pipelineSelectedId?: string }) => {
             <Button
               sx={{ mt: 1, mr: 1 }}
               variant="contained"
-              onClick={() => RunPipeline()}
+              onClick={() =>
+                RunPipeline({
+                  variables: { runPipelineId: pipelineSelectedId },
+                })
+              }
             >
               EXECUTE
             </Button>

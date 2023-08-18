@@ -17,7 +17,7 @@ const CustomModal = ({
   title,
   onClose,
   onConfirmAction,
-  textConfirmButton = "Aceptar",
+  textConfirmButton = "Acept",
 }: ModalProps) => {
   return (
     <Box
@@ -75,7 +75,7 @@ const CustomModal = ({
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "center", gap: 3, mt: 5 }}>
           <Button variant="text" sx={{ color: "#1A75FF" }} onClick={onClose}>
-            Cancelar
+            Cancel
           </Button>
           <Button color="secondary" onClick={onConfirmAction}>
             {textConfirmButton}

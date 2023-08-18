@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const RUN_PIPELINE = gql`
-  mutation Mutation {
-    runPipeline
+  mutation RunPipeline($runPipelineId: ID!) {
+    runPipeline(id: $runPipelineId)
   }
 `;
 
