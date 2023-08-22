@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import { uuid } from "uuidv4";
+import React from "react";
 import { Alert, Box, Button, Typography } from "@mui/material";
 import { Form, Formik, FormikHelpers, FormikProps } from "formik";
 import { useRouter } from "next/router";
 import { Parameters } from "../../../components/ParametersImputs";
 import TextInputFormik from "../../../components/TextInputFormik";
 import { analysisModulesValidationSchema } from "../../../lib/validationSchema";
-import { IAnalysisModule, TParameter } from "../../../types/AnalisisModule";
+import { IAnalysisModule } from "../../../types/AnalisisModule";
 
 type CreateUpdateAnalysisModuleProps = {
   isUpdatingAnalysisModule?: boolean;

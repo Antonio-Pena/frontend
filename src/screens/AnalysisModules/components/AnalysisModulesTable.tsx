@@ -11,7 +11,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Box, Tooltip } from "@mui/material";
 import { IAnalysisModule } from "../../../types/AnalisisModule";
 import { useRouter } from "next/router";
-import { useFetch } from "../../../hooks/useFetch";
 import Skeleton from "@mui/material/Skeleton";
 import { useQuery } from "@apollo/client";
 import { GET_ANALYSIS_MODULES } from "../../../services/analysisModules/getAnalysisModules";
@@ -121,7 +120,7 @@ const AnalysisModulesTable = ({
     router.push(`/analysisModules/readonly/${params.id}`);
   };
 
-  if (loading) {
+  if (loading || error) {
     return (
       <Box
         sx={{

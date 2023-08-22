@@ -7,10 +7,7 @@ import {
   IUpdateSetUpAnalysisModule,
 } from "../../../types/AnalisisModule";
 import SetEditAnalysisModuleView from "./View";
-import analysisModulesService from "../../../../services/analysisModules";
 import { useRouter } from "next/router";
-import { uuid } from "uuidv4";
-import { useFetch } from "../../../hooks/useFetch";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_ANALYSIS_MODULE } from "../../../services/analysisModules/getAnalysisModules";
 import {

@@ -1,18 +1,9 @@
-import { FormikHelpers } from "formik";
-import React, { useState } from "react";
-import {
-  IAnalysisModule,
-  IUpdateCreateAnalysisModule,
-} from "../../../types/AnalisisModule";
+import React from "react";
+import { IAnalysisModule } from "../../../types/AnalisisModule";
 import ReadAnalysisModule from "./View";
 import { useRouter } from "next/router";
-import { uuid } from "uuidv4";
-import { useMutation, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { GET_ANALYSIS_MODULE } from "../../../services/analysisModules/getAnalysisModules";
-import {
-  CREATE_ANALYSIS_MODULE,
-  UPDATE_ANALYSIS_MODULE,
-} from "../../../services/analysisModules/mutateAnalysisModule";
 
 const ReadAnalysisModuleContainer = () => {
   const router = useRouter();

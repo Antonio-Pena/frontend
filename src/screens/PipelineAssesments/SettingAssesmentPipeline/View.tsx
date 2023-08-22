@@ -3,7 +3,6 @@ import { Alert, Box, Button, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import WarningIcon from "@mui/icons-material/Warning";
 import { ISetUpAnalysisModule } from "../../../types/AnalisisModule";
-import { useFetch } from "../../../hooks/useFetch";
 import Filter from "../../../components/Filter";
 import SetUpAnalysisModulesTable from "../components/SetUpAnalysisModulesTable";
 import CustomModal from "../../../components/Modal";

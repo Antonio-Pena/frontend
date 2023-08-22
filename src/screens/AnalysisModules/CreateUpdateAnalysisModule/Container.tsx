@@ -3,12 +3,9 @@ import React, { useState } from "react";
 import {
   IAnalysisModule,
   IUpdateCreateAnalysisModule,
-  TModuleParameter,
-  TParameter,
 } from "../../../types/AnalisisModule";
 import CreateUpdateAnalysisModuleView from "./View";
 import { useRouter } from "next/router";
-import { Alert, Box } from "@mui/material";
 import { uuid } from "uuidv4";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_ANALYSIS_MODULE } from "../../../services/analysisModules/getAnalysisModules";
@@ -91,7 +88,7 @@ const CreateUpdateAnalysisModuleContainer = ({
         variables: { input: analisysModuleToCreate },
       });
 
-      // if (!error) {
+      // if (!errorCreating) {
       //   resetForm();
       // }
     }

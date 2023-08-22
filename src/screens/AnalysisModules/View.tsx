@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { Alert, Box, Button, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Typography } from "@mui/material";
 import Filter from "../../components/Filter";
 import AnalysisModulesTable from "./components/AnalysisModulesTable";
 import { useRouter } from "next/router";
 import CustomModal from "../../components/Modal";
 import WarningIcon from "@mui/icons-material/Warning";
-import analysisModulesService from "../../../services/analysisModules";
-import { useFetch } from "../../hooks/useFetch";
 import { IAnalysisModule } from "../../types/AnalisisModule";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_ANALYSIS_MODULES } from "../../services/analysisModules/getAnalysisModules";
