@@ -1,4 +1,4 @@
-import { DocumentNode, gql } from "@apollo/client";
+import { gql } from "@apollo/client";
 
 export const GET_PARAMETERS = gql`
   query Parameters {

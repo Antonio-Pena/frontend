@@ -1,5 +1,4 @@
-import { DocumentNode, gql } from "@apollo/client";
-import apolloClient from "../../apollo/apolloClient";
+import { gql } from "@apollo/client";
 
 export const GET_ANALYSIS_MODULES = gql`
   query AnalysisModules {
