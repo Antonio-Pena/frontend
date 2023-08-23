@@ -18,6 +18,7 @@ const View = ({ pipelineSelectedId }: { pipelineSelectedId?: string }) => {
   const [filterByName, setFilterByName] = useState<string>("");
   const [filterByVersion, setFilterByVersion] = useState<string>("");
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [running, setRunning] = useState<boolean>(false);
   const [moduleIdToDelete, setModuleIdToDelete] = useState<string>("");
   const [successfullDeleteMessage, setSuccessfullDeleteMessage] =
     useState<string>("");
@@ -144,11 +145,25 @@ const View = ({ pipelineSelectedId }: { pipelineSelectedId?: string }) => {
             handleDelete={handleDeleteModule}
             pipelineSelectedId={pipelineSelectedId}
           />
+
+          {errorRunning && (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                mt: 3,
+              }}
+            >
+              <Alert severity="error">Error running assesment pipeline</Alert>
+            </Box>
+          )}
+
           <Box
             sx={{
               display: "flex",
               gap: 0.5,
               justifyContent: "center",
+              alignContent: "center",
               mt: 3,
             }}
           >
@@ -156,21 +171,28 @@ const View = ({ pipelineSelectedId }: { pipelineSelectedId?: string }) => {
               color="warning"
               sx={{ mt: 1, mr: 1 }}
               variant="contained"
-              onClick={() => StopPipeline()}
+              onClick={() => {
+                StopPipeline();
+                setRunning(false);
+              }}
             >
               STOP
             </Button>
             <Button
               sx={{ mt: 1, mr: 1 }}
               variant="contained"
-              onClick={() =>
+              onClick={() => {
                 RunPipeline({
                   variables: { runPipelineId: pipelineSelectedId },
-                })
-              }
+                });
+                setRunning(true);
+              }}
             >
-              EXECUTE
+              {running ? "Running ..." : "EXECUTE"}
             </Button>
+            {running && (
+              <Alert severity="info">Assesment pipeline is running</Alert>
+            )}
           </Box>
         </Box>
       </Box>
