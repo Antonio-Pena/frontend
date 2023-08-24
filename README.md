@@ -22,7 +22,7 @@ cd frontend
 yarn dev
 ```
 
-6. Access the project in your web browser at the following URL:
+4. Access the project in your web browser at the following URL:
 
 ```
 http://localhost:3000/
