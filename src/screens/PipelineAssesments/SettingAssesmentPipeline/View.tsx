@@ -67,7 +67,7 @@ const View = ({ pipelineSelectedId }: { pipelineSelectedId?: string }) => {
     });
     setIsDeleting(false);
     setSuccessfullDeleteMessage(
-      `El módulo ${moduleToDelete?.name} ha sido borrado`
+      `Analysis module ${moduleToDelete?.name} has been deleted`
     );
     setTimeout(() => {
       setSuccessfullDeleteMessage("");
